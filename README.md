@@ -15,7 +15,9 @@ While traditional verification tools typically focus on a single content type, T
 
  🏗️ System Architecture
 
-TrueVision adopts a structured, modular workflow[cite: 22]. Users upload content (text, image, or PDF), which first passes through a **File Module** for format validation and metadata extraction[cite: 22]. The content is then routed to specific analysis modules: **Text & Document Analysis** or **Image Processing**[cite: 22]. These independent modules feed their outputs into a **Decision & Reporting** component that generates an authenticity assessment and highlights anomalies, displaying the final outcomes on an interactive user dashboard[cite: 22, 28].
+TrueVision adopts a structured, modular workflow[cite: 22]. Users upload content (text, image, or PDF), which first passes through a **File Module** for format validation and metadata extraction[cite: 22]. The content is then routed to specific analysis modules: **Text & Document Analysis** or **Image Processing**[cite: 22]. These independent modules feed their outputs into a **Decision & Reporting** component that generates an authenticity assessment and highlights anomalies, displaying the final outcomes on an interactive user dashboard[cite: 22, 28]
+<img width="588" height="660" alt="image" src="https://github.com/user-attachments/assets/bff9d28e-a6d6-4702-ba3c-d8cf01e6e260" />
+
 
  💻 Technology Stack
 
@@ -25,3 +27,12 @@ TrueVision adopts a structured, modular workflow[cite: 22]. Users upload content
 * **Image Processing:** OpenCV[cite: 34]
 * **Data Processing:** NumPy, Pandas[cite: 35]
 * **Document Processing:** PyPDF2, PDFMiner, python-docx[cite: 35]
+
+<img width="588" height="660" alt="image" src="https://github.com/user-attachments/assets/06eb8960-6921-40bb-943a-79adb40a372d" />
+<img width="859" height="379" alt="image" src="https://github.com/user-attachments/assets/fc859420-f591-412e-be44-a3045cc2733e" />
+<img width="848" height="328" alt="image" src="https://github.com/user-attachments/assets/c4c3d9ec-49ea-4aa1-98f6-050428cd070e" />
+<img width="844" height="480" alt="image" src="https://github.com/user-attachments/assets/b30da171-33c9-4cb3-93e6-c2c7008171fa" />
+<img width="747" height="453" alt="image" src="https://github.com/user-attachments/assets/b4e69d7a-f0d3-4929-8e44-551b1efdf57b" />
+
+
+
