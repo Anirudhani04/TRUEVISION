@@ -1,0 +1,3334 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TrueVision Admin Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Updated color palette to emerald-based professional theme */
+            --background: oklch(1 0 0); /* Pure white */
+            --foreground: oklch(0.3 0 0); /* Dark gray for text */
+            --card: oklch(0.98 0 0); /* Very light gray for cards */
+            --card-foreground: oklch(0.3 0 0); /* Dark gray for card text */
+            --popover: oklch(1 0 0); /* White for popovers */
+            --popover-foreground: oklch(0.3 0 0); /* Dark gray for popover text */
+            --primary: oklch(0.5 0.15 290); /* Purple-600 equivalent */
+            --primary-foreground: oklch(1 0 0); /* White text on primary */
+            --secondary: oklch(0.4 0 0); /* Medium gray */
+            --secondary-foreground: oklch(1 0 0); /* White text on secondary */
+            --muted: oklch(0.96 0 0); /* Light gray for muted areas */
+            --muted-foreground: oklch(0.45 0 0); /* Medium gray for muted text */
+            --accent: oklch(0.6 0.15 290); /* Purple accent */
+            --accent-foreground: oklch(1 0 0); /* White text on accent */
+            --destructive: oklch(0.55 0.25 25); /* Red for destructive actions */
+            --destructive-foreground: oklch(1 0 0); /* White text on destructive */
+            --border: oklch(0.9 0 0); /* Light gray borders */
+            --input: oklch(0.99 0 0); /* Very light background for inputs */
+            --ring: oklch(0.5 0.15 290 / 0.5); /* Purple focus ring */
+        }
+
+        .dark {
+            /* Enhanced dark mode with emerald accents */
+            --background: oklch(0.08 0 0); /* Very dark background */
+            --foreground: oklch(0.95 0 0); /* Light text */
+            --card: oklch(0.12 0 0); /* Dark card background */
+            --card-foreground: oklch(0.95 0 0); /* Light card text */
+            --popover: oklch(0.12 0 0); /* Dark popover */
+            --popover-foreground: oklch(0.95 0 0); /* Light popover text */
+            --primary: oklch(0.6 0.15 290); /* Brighter purple for dark mode */
+            --primary-foreground: oklch(0.08 0 0); /* Dark text on primary */
+            --secondary: oklch(0.2 0 0); /* Dark gray */
+            --secondary-foreground: oklch(0.95 0 0); /* Light text */
+            --muted: oklch(0.15 0 0); /* Dark muted background */
+            --muted-foreground: oklch(0.7 0 0); /* Medium light text */
+            --accent: oklch(0.65 0.15 290); /* Bright purple accent */
+            --accent-foreground: oklch(0.08 0 0); /* Dark text on accent */
+            --destructive: oklch(0.6 0.25 25); /* Brighter red */
+            --destructive-foreground: oklch(0.95 0 0); /* Light text */
+            --border: oklch(0.2 0 0); /* Dark border */
+            --input: oklch(0.15 0 0); /* Dark input background */
+            --ring: oklch(0.6 0.15 290 / 0.5); /* Purple focus ring */
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--background);
+            color: var(--foreground);
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        /* Background gradient that respects theme */
+        .bg-gradient-theme {
+            background: linear-gradient(135deg, var(--background) 0%, var(--muted) 100%);
+            transition: background 0.3s ease;
+        }
+
+        /* Ensure all theme transitions are smooth */
+        * {
+            transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+        }
+
+        /* Override any Tailwind classes that might conflict with theme */
+        .bg-background { background-color: var(--background) !important; }
+        .bg-foreground { background-color: var(--foreground) !important; }
+        .bg-card { background-color: var(--card) !important; }
+        .bg-muted { background-color: var(--muted) !important; }
+        .text-foreground { color: var(--foreground) !important; }
+        .text-muted-foreground { color: var(--muted-foreground) !important; }
+        .border-border { border-color: var(--border) !important; }
+
+        /* Completely removed glass effect and using solid backgrounds for proper contrast */
+        .glass-effect {
+            background: var(--card);
+            border: 1px solid var(--border);
+        }
+
+        .gradient-border {
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            padding: 1px;
+            border-radius: 14px;
+        }
+
+        .gradient-border > div {
+            background: var(--card);
+            border-radius: 13px;
+        }
+
+        .stat-card {
+            position: relative;
+            overflow: hidden;
+            background: var(--card);
+            border: 1px solid var(--border);
+            color: var(--card-foreground);
+        }
+
+        .stat-card::after {
+            content: "";
+            position: absolute;
+            top: -40%;
+            right: -40%;
+            width: 200px;
+            height: 200px;
+            background: radial-gradient(closest-side, rgba(16, 185, 129, 0.1), transparent 70%);
+            transform: rotate(25deg);
+            pointer-events: none;
+        }
+
+        .tilt-card {
+            transform-style: preserve-3d;
+            transition: transform 200ms ease, box-shadow 200ms ease;
+        }
+
+        .tilt-card:hover {
+            box-shadow: 0 20px 40px -12px rgba(16, 185, 129, 0.25);
+        }
+
+        .animate-float {
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .scroll-slim {
+            scrollbar-width: thin;
+        }
+
+        .scroll-slim::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+
+        .scroll-slim::-webkit-scrollbar-thumb {
+            background: rgba(16, 185, 129, 0.4);
+            border-radius: 9999px;
+        }
+
+        .scroll-slim::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .bg-primary { background: var(--primary); }
+        .bg-accent { background: var(--accent); }
+        .bg-card { background: var(--card); }
+        .bg-muted { background: var(--muted); }
+        .bg-input { background: var(--input); }
+        .bg-destructive { background: var(--destructive); }
+        .text-primary { color: var(--primary); }
+        .text-accent { color: var(--accent); }
+        .text-foreground { color: var(--foreground); }
+        .text-muted-foreground { color: var(--muted-foreground); }
+        .text-primary-foreground { color: var(--primary-foreground); }
+        .text-accent-foreground { color: var(--accent-foreground); }
+        .text-destructive { color: var(--destructive); }
+        .border-border { border-color: var(--border); }
+        .border-primary { border-color: var(--primary); }
+
+        .bg-gradient-primary {
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+        }
+
+        /* Fixed secondary gradient to use proper contrast colors */
+        .bg-gradient-secondary {
+            background: var(--foreground);
+            color: var(--background);
+        }
+
+        .bg-gradient-to-br {
+            background: linear-gradient(to bottom right, var(--background), var(--muted));
+        }
+
+        /* Updated badge styles with proper contrast ratios and important flags */
+        .badge-success {
+            background: var(--primary) !important;
+            color: var(--primary-foreground) !important;
+        }
+
+        .badge-info {
+            background: var(--primary) !important;
+            color: var(--primary-foreground) !important;
+        }
+
+        .badge-warning {
+            background: var(--primary) !important;
+            color: var(--primary-foreground) !important;
+        }
+
+        .badge-danger {
+            background: var(--destructive) !important;
+            color: var(--destructive-foreground) !important;
+        }
+
+        /* Fixed file icon background for proper emoji contrast */
+        .file-icon-bg {
+            background: var(--primary) !important;
+            color: var(--primary-foreground) !important;
+        }
+
+        .hidden { display: none; }
+        .block { display: block; }
+        /* Skeleton Loading Animation */
+.loading-skeleton {
+    background: linear-gradient(90deg, transparent, var(--muted), transparent);
+    background-size: 200% 100%;
+    animation: skeleton-loading 1.8s ease-in-out infinite;
+    color: transparent !important;
+    border-radius: 6px;
+    display: inline-block;
+    min-width: 60px;
+}
+
+@keyframes skeleton-loading {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+/* Result badge colors - reuse for all history tables */
+.badge-authentic { background: var(--primary) !important; color: var(--primary-foreground) !important; }
+.badge-ai { background: var(--accent) !important; color: var(--accent-foreground) !important; }
+.badge-plagiarism { background: var(--destructive) !important; color: var(--destructive-foreground) !important; }
+.badge-modified { background: var(--destructive) !important; color: var(--destructive-foreground) !important; }
+    </style>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        background: 'var(--background)',
+                        foreground: 'var(--foreground)',
+                        card: 'var(--card)',
+                        'card-foreground': 'var(--card-foreground)',
+                        primary: 'var(--primary)',
+                        'primary-foreground': 'var(--primary-foreground)',
+                        secondary: 'var(--secondary)',
+                        'secondary-foreground': 'var(--secondary-foreground)',
+                        muted: 'var(--muted)',
+                        'muted-foreground': 'var(--muted-foreground)',
+                        accent: 'var(--accent)',
+                        'accent-foreground': 'var(--accent-foreground)',
+                        destructive: 'var(--destructive)',
+                        'destructive-foreground': 'var(--destructive-foreground)',
+                        border: 'var(--border)',
+                        input: 'var(--input)',
+                        ring: 'var(--ring)',
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="min-h-screen">
+    <div class="fixed inset-0 bg-gradient-theme -z-10"></div>
+    <!-- Enhanced decorative background -->
+    <div aria-hidden="true" class="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
+        <div class="absolute -top-32 -right-32 h-96 w-96 rounded-full bg-gradient-to-tr from-purple-500/20 to-indigo-500/20 blur-3xl animate-float"></div>
+        <div class="absolute -bottom-32 -left-32 h-96 w-96 rounded-full bg-gradient-to-tr from-indigo-500/15 to-purple-500/15 blur-3xl animate-float" style="animation-delay: -1.5s;"></div>
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-64 w-64 rounded-full bg-gradient-to-tr from-purple-500/10 to-indigo-500/10 blur-2xl animate-float" style="animation-delay: -3s;"></div>
+    </div>
+
+    <div class="flex min-h-screen">
+        <!-- Enhanced Sidebar -->
+        <aside id="sidebar" class="fixed inset-y-0 left-0 z-30 w-72 transform transition-transform duration-300 md:translate-x-0 -translate-x-full glass-effect border-r border-border">
+            <div class="h-16 flex items-center gap-3 px-6 border-b border-border">
+                <div class="gradient-border">
+                    <div class="h-10 w-10 rounded-xl bg-card text-primary grid place-content-center">
+                        <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                        </svg>
+                    </div>
+                </div>
+                <span class="text-xl font-bold bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent">
+                    TrueVision Admin
+                </span>
+            </div>
+
+            <nav class="p-4 space-y-2 overflow-y-auto scroll-slim h-[calc(100vh-4rem)]">
+                <a href="#" onclick="showSection('dashboard')" id="nav-dashboard" class="nav-link group flex items-center gap-3 px-4 py-3 rounded-xl bg-gradient-primary text-primary-foreground shadow-lg hover:shadow-xl border border-border transition-all duration-300">
+                    <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                    </svg>
+                    <span class="font-semibold">Dashboard</span>
+                </a>
+
+                <a href="#" onclick="showSection('image-forensics')" id="nav-image-forensics" class="nav-link group flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-muted transition-all duration-200">
+                    <svg class="h-5 w-5 text-muted-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                    <span class="font-medium text-foreground">Image Forensics</span>
+                </a>
+
+                <a href="#" onclick="showSection('text-forensics')" id="nav-text-forensics" class="nav-link group flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-muted transition-all duration-200">
+                    <svg class="h-5 w-5 text-muted-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                    </svg>
+                    <span class="font-medium text-foreground">Text Analysis</span>
+                </a>
+
+                <a href="#" onclick="showSection('document-forensics')" id="nav-document-forensics" class="nav-link group flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-muted transition-all duration-200">
+                    <svg class="h-5 w-5 text-muted-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2-2v14a2 2 0 002 2z" />
+                    </svg>
+                    <span class="font-medium text-foreground">Document Forensics</span>
+                </a>
+
+
+                <a href="#" onclick="showSection('integrity-check')" id="nav-integrity-check" class="nav-link group flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-muted transition-all duration-200">
+                    <svg class="h-5 w-5 text-muted-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                    </svg>
+                    <span class="font-medium text-foreground">Integrity Check</span>
+                </a>
+
+                <div class="pt-4 mt-4 border-t border-border">
+                    <div class="px-4 text-xs uppercase tracking-wider text-muted-foreground mb-3 font-semibold">
+                        Administration
+                    </div>
+                    <a href="#" onclick="showSection('user-management')" id="nav-user-management" class="nav-link group flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-muted transition-all duration-200">
+                        <svg class="h-5 w-5 text-muted-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                        </svg>
+                        <span class="font-medium text-foreground">User Management</span>
+                    </a>
+                </div>
+
+
+                <div class="pt-6 mt-6 border-t border-border">
+    <div class="px-4 text-xs uppercase tracking-wider text-muted-foreground mb-3 font-semibold">
+        Analysis Stats
+    </div>
+    <div id="stats-container" class="px-4 py-4 rounded-xl bg-gradient-to-br from-card to-muted border border-border">
+        <!-- Dynamic: Scans Today -->
+        <div class="flex items-center justify-between text-sm mb-2">
+            <span class="text-muted-foreground">Scans Today</span>
+            <span id="scans-today" class="font-bold text-foreground">Loading...</span>
+        </div>
+        <div class="w-full bg-muted rounded-full h-2.5 overflow-hidden">
+            <div class="h-2.5 rounded-full bg-gradient-to-r from-purple-500 to-indigo-500 transition-all duration-500" id="scans-progress" style="width: 0%;"></div>
+        </div>
+    </div>
+</div>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <div class="flex-1 md:pl-72">
+            <!-- Enhanced Topbar -->
+            <header class="sticky top-0 z-20 glass-effect border-b border-border">
+                <div class="h-16 flex items-center gap-3 sm:gap-4 px-3 md:px-6">
+                    <button id="sidebar-toggle" class="md:hidden p-2 rounded-xl hover:bg-muted transition-colors" aria-label="Toggle sidebar">
+                        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+                        </svg>
+                    </button>
+
+                    <div class="relative flex-1 max-w-2xl">
+                        <input type="search" id="search-input" placeholder="Search files, types, owners..." class="w-full rounded-2xl border-border bg-input placeholder-muted-foreground pl-12 pr-4 py-3 shadow-sm focus:outline-none focus:ring-2 focus:ring-ring focus:border-primary transition-all" />
+                        <svg class="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35M11 19a8 8 0 100-16 8 8 0 000 16z" />
+                        </svg>
+                    </div>
+
+                    <!-- <div class="hidden sm:flex items-center gap-2">
+                        <select id="sort-select" class="rounded-xl border-border bg-input py-2.5 px-4 text-sm shadow-sm focus:ring-2 focus:ring-ring">
+                            <option value="date-desc">Newest</option>
+                            <option value="date-asc">Oldest</option>
+                            <option value="name-asc">Name A→Z</option>
+                            <option value="name-desc">Name Z→A</option>
+                            <option value="size-desc">Size High→Low</option>
+                            <option value="size-asc">Size Low→High</option>
+                        </select>
+                    </div> -->
+
+                   
+                    <input id="file-input" type="file" class="hidden" multiple />
+
+                    <button id="theme-toggle" class="p-2.5 rounded-xl hover:bg-muted transition-colors" title="Toggle theme">
+                        <svg id="sun-icon" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2m0 14v2m7.071-12.071l-1.414 1.414M6.343 17.657l-1.414 1.414M21 12h-2M5 12H3m14.657 6.657l-1.414-1.414M7.757 7.757L6.343 6.343M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                        </svg>
+                        <svg id="moon-icon" class="h-5 w-5 hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" />
+                        </svg>
+                    </button>
+
+                    <a href="{% url 'logout' %}" class="p-2.5 rounded-xl hover:bg-red-50 hover:text-red-500 transition-colors" title="Logout">
+                        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                        </svg>
+                    </a>
+
+                    
+                </div>
+            </header>
+
+            <!-- Enhanced Content -->
+            <main class="p-6 md:p-8 space-y-8">
+                <!-- Dashboard Section -->
+                <div id="dashboard-section" class="section-content">
+                    <!-- Enhanced Stat cards -->
+                    <!-- Stat Cards with Loading State -->
+<section class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6 mb-8">
+    <!-- Total Scans -->
+    <div class="stat-card tilt-card group rounded-2xl p-6 bg-card shadow-lg hover:shadow-xl border border-border transition-all duration-300">
+        <div class="flex items-start justify-between">
+            <div>
+                <div class="text-xs uppercase tracking-wide text-muted-foreground mb-1">Total Scans</div>
+                <div class="flex items-end gap-2">
+                    <div id="main-total-scans" class="text-3xl font-extrabold text-foreground">
+                        <span class="loading-skeleton">888,888</span>
+                    </div>
+                </div>
+            </div>
+            <div class="h-12 w-12 rounded-2xl grid place-content-center bg-emerald-500/10 text-emerald-600">
+                <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                </svg>
+            </div>
+        </div>
+        <div class="text-xs text-muted-foreground mt-2 font-medium">Files analyzed in total</div>
+    </div>
+
+    <!-- Threats Detected -->
+    <div class="stat-card tilt-card group rounded-2xl p-6 bg-card shadow-lg hover:shadow-xl border border-border transition-all duration-300">
+        <div class="flex items-start justify-between">
+            <div>
+                <div class="text-xs uppercase tracking-wide text-muted-foreground mb-1">Threats Detected</div>
+                <div class="flex items-end gap-2">
+                    <div id="main-threats-detected" class="text-3xl font-extrabold text-foreground">
+                        <span class="loading-skeleton">888</span>
+                    </div>
+                </div>
+            </div>
+            <div class="h-12 w-12 rounded-2xl grid place-content-center bg-red-500/10 text-red-600">
+                <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                </svg>
+            </div>
+        </div>
+        <div class="text-xs text-muted-foreground mt-2 font-medium">Forgeries, AI content, tampering</div>
+    </div>
+
+    <!-- Avg Confidence -->
+    <div class="stat-card tilt-card group rounded-2xl p-6 bg-card shadow-lg hover:shadow-xl border border-border transition-all duration-300">
+        <div class="flex items-start justify-between">
+            <div>
+                <div class="text-xs uppercase tracking-wide text-muted-foreground mb-1">Avg Confidence</div>
+                <div class="flex items-end gap-2">
+                    <div id="main-avg-confidence" class="text-3xl font-extrabold text-foreground">
+                        <span class="loading-skeleton">99.9%</span>
+                    </div>
+                </div>
+            </div>
+            <div class="h-12 w-12 rounded-2xl grid place-content-center bg-teal-500/10 text-teal-600">
+                <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                </svg>
+            </div>
+        </div>
+        <div class="text-xs text-muted-foreground mt-2 font-medium">Detection accuracy score</div>
+    </div>
+
+    <!-- Avg Processing -->
+    <div class="stat-card tilt-card group rounded-2xl p-6 bg-card shadow-lg hover:shadow-xl border border-border transition-all duration-300">
+        <div class="flex items-start justify-between">
+            <div>
+                <div class="text-xs uppercase tracking-wide text-muted-foreground mb-1">Avg Processing</div>
+                <div class="flex items-end gap-2">
+                    <div id="main-avg-processing" class="text-3xl font-extrabold text-foreground">
+                        <span class="loading-skeleton">0.0s</span>
+                    </div>
+                </div>
+            </div>
+            <div class="h-12 w-12 rounded-2xl grid place-content-center bg-blue-500/10 text-blue-600">
+                <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3-3m0 0l-3-3m3 3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+            </div>
+        </div>
+        <div class="text-xs text-muted-foreground mt-2 font-medium">Average analysis time</div>
+    </div>
+</section>
+
+                <!-- Enhanced Upload area -->
+                
+
+                <!-- Enhanced Files table -->
+                <section class="rounded-3xl overflow-hidden bg-card shadow-lg border border-border">
+                    <div class="px-6 py-4 border-b border-border flex items-center justify-between">
+                        <h3 class="font-bold text-lg flex items-center gap-3 text-foreground">
+                            <!-- Fixed emoji contrast with solid background and white text -->
+                            <span class="inline-flex h-8 w-8 items-center justify-center rounded-xl text-lg" style="background: var(--primary) !important; color: var(--primary-foreground) !important;">📁</span>
+                            All Files
+                        </h3>
+                        <div id="file-count" class="text-sm text-muted-foreground font-medium">6 items</div>
+                    </div>
+                    <div class="overflow-x-auto scroll-slim">
+                        <table class="w-full text-sm">
+                            <thead class="bg-muted text-muted-foreground text-left">
+                                <tr>
+                                    <th class="p-4 font-semibold">Name</th>
+                                    <th class="p-4 font-semibold">Owner</th>
+                                    <th class="p-4 font-semibold">Size</th>
+                                    <th class="p-4 font-semibold">Modified</th>
+                                    <th class="p-4 font-semibold">Shared</th>
+                                    <th class="p-4 font-semibold text-right">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="files-tbody" class="divide-y divide-border">
+                                <!-- Files will be populated by JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+                </div>
+
+                <!-- Image Forensics Section -->
+                <div id="image-forensics-section" class="section-content hidden">
+                    <div class="mb-8">
+                        <h1 class="text-3xl font-bold text-foreground mb-2">Image Forensic Analysis</h1>
+                        <p class="text-muted-foreground text-lg">Advanced AI-powered image analysis for forgery detection</p>
+                    </div>
+
+                    <section class="mb-8">
+                        <div class="bg-card rounded-3xl shadow-lg border border-border p-8">
+                            <div class="flex items-center justify-between mb-6">
+                                <h2 class="text-xl font-bold text-foreground">Global Image Analysis History</h2>
+                                <div class="text-sm text-muted-foreground">
+                                    <span id="image-history-count">0 items</span>
+                                </div>
+                            </div>
+                            
+                            <div class="overflow-x-auto">
+                                <table class="w-full">
+                                    <thead>
+                                        <tr class="border-b border-border">
+                                            <th class="text-left p-4 font-semibold text-foreground">Image</th>
+                                            <th class="text-left p-4 font-semibold text-foreground">User</th>
+                                            <th class="text-left p-4 font-semibold text-foreground hidden md:table-cell">Analysis Type</th>
+                                            <th class="text-left p-4 font-semibold text-foreground">Result</th>
+                                            <th class="text-left p-4 font-semibold text-foreground hidden sm:table-cell">Confidence</th>
+                                            <th class="text-left p-4 font-semibold text-foreground hidden lg:table-cell">Date</th>
+                                            <th class="text-right p-4 font-semibold text-foreground">Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="image-history-tbody">
+                                        <tr>
+                                            <td colspan="7" class="p-8 text-center text-muted-foreground font-medium">
+                                                No image analysis history found.
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+
+                <!-- Text Forensics Section -->
+                <div id="text-forensics-section" class="section-content hidden">
+                    <!--  -->
+
+                    <!-- Text Analysis Results Section -->
+                    <section id="text-analysis-results-section" class="hidden mb-8 rounded-3xl overflow-hidden bg-card shadow-lg border border-border p-8">
+                        <h3 class="font-bold text-lg flex items-center gap-3 text-foreground mb-6">
+                            <span class="inline-flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-primary text-primary-foreground text-lg">✅</span>
+                            Analysis Results
+                        </h3>
+                        <div id="text-analysis-report-content" class="space-y-4">
+                            <!-- Results populated by JavaScript -->
+                        </div>
+                    </section>
+
+                    <!-- Text History Section -->
+                    <section class="rounded-3xl overflow-hidden bg-card shadow-lg border border-border">
+                        <div class="px-6 py-4 border-b border-border flex items-center justify-between">
+                            <h3 class="font-bold text-lg flex items-center gap-3 text-foreground">
+                                <span class="inline-flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-primary text-primary-foreground text-lg">📊</span>
+                                Text Analysis History
+                            </h3>
+                            <div id="text-history-count" class="text-sm text-muted-foreground font-medium">0 items</div>
+                        </div>
+                        <div class="overflow-x-auto scroll-slim">
+                            <table class="w-full text-sm">
+                                <thead class="bg-muted text-muted-foreground text-left">
+                                    <tr>
+                                        <th class="p-4 font-semibold">Text Preview</th>
+                                        <th class="p-4 font-semibold">User</th>
+                                        <th class="p-4 font-semibold">Analysis Type</th>
+                                        <th class="p-4 font-semibold">Result</th>
+                                        <th class="p-4 font-semibold">Confidence</th>
+                                        <th class="p-4 font-semibold">Date</th>
+                                        <th class="p-4 font-semibold text-right">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="text-history-tbody" class="divide-y divide-border">
+                                    <tr>
+                                        <td colspan="6" class="p-8 text-center text-muted-foreground font-medium">
+                                            No text analysis history yet. Run an analysis to get started!
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </section>
+                </div>
+
+                <!-- Document Forensics Section -->
+                <div id="document-forensics-section" class="section-content hidden">
+                    <div class="mb-8">
+                        <h1 class="text-3xl font-bold text-foreground mb-2">Document Forensic Analysis</h1>
+                        <p class="text-muted-foreground text-lg">Advanced AI-powered document analysis for plagiarism detection and AI-generated content verification</p>
+                    </div>
+
+                    <!-- Document Analysis History Section -->
+                    <section class="mb-8">
+                        <div class="bg-card rounded-3xl shadow-lg border border-border p-8">
+                            <div class="flex items-center justify-between mb-6">
+                                <h2 class="text-xl font-bold text-foreground">Global Document Analysis History</h2>
+                                <div class="text-sm text-muted-foreground">
+                                    <span id="document-history-count">0 items</span>
+                                </div>
+                            </div>
+                            
+                            <div class="overflow-x-auto">
+                                <table class="w-full">
+                                    <thead>
+                                        <tr class="border-b border-border">
+                                            <th class="text-left p-4 font-semibold text-foreground">Document</th>
+                                            <th class="text-left p-4 font-semibold text-foreground">Result</th>
+                                            <th class="text-left p-4 font-semibold text-foreground hidden sm:table-cell">Confidence</th>
+                                            <th class="text-left p-4 font-semibold text-foreground hidden md:table-cell">User</th>
+                                            <th class="text-left p-4 font-semibold text-foreground hidden lg:table-cell">Scan ID</th>
+                                            <th class="text-left p-4 font-semibold text-foreground hidden lg:table-cell">Date</th>
+                                            <th class="text-right p-4 font-semibold text-foreground">Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="document-history-tbody">
+                                        <tr>
+                                            <td colspan="7" class="p-8 text-center text-muted-foreground font-medium">
+                                                No document analysis history found.
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </section>
+                            
+
+                </div>
+
+                <!-- Integrity Check Section -->
+                <div id="integrity-check-section" class="section-content hidden">
+                    <div class="mb-8">
+                        <h1 class="text-3xl font-bold text-foreground mb-2">File Integrity Verification</h1>
+                        <!-- <p class="text-muted-foreground text-lg">Advanced file integrity checking using cryptographic hashes and digital signatures</p> -->
+                    </div>
+
+
+
+                    <!-- Integrity Check History Section -->
+                    <section class="mb-8">
+                        <div class="bg-card rounded-3xl shadow-lg border border-border p-8">
+                            <div class="flex items-center justify-between mb-6">
+                                <h3 class="font-bold text-lg flex items-center gap-3 text-foreground">
+                                    <span class="inline-flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-primary text-primary-foreground text-lg">🔐</span>
+                                    Global Verification History
+                                </h3>
+                                <div id="integrity-history-count" class="text-sm text-muted-foreground font-medium">0 items</div>
+                            </div>
+                            <div class="overflow-x-auto scroll-slim">
+                                <table class="w-full text-sm">
+                                    <thead class="bg-muted text-muted-foreground text-left">
+                                        <tr>
+                                            <th class="p-4 font-semibold">File Name</th>
+                                            <th class="p-4 font-semibold">User</th>
+                                            <th class="p-4 font-semibold">Verification Type</th>
+                                            <th class="p-4 font-semibold">Result</th>
+                                            <th class="p-4 font-semibold">Confidence</th>
+                                            <th class="p-4 font-semibold">Date</th>
+                                            <th class="p-4 font-semibold text-right">Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="integrity-history-tbody" class="divide-y divide-border">
+                                        <tr>
+                                            <td colspan="7" class="p-8 text-center text-muted-foreground font-medium">
+                                                No verification history found.
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+                <!-- User Management Section -->
+                <div id="user-management-section" class="section-content hidden">
+                    <div class="mb-8">
+                        <h1 class="text-3xl font-bold text-foreground mb-2">User Management</h1>
+                        <p class="text-muted-foreground text-lg">Manage user access and system permissions</p>
+                    </div>
+
+                    <div class="bg-card rounded-3xl shadow-lg border border-border overflow-hidden">
+                        <div class="px-6 py-4 border-b border-border flex items-center justify-between">
+                            <h3 class="font-bold text-lg flex items-center gap-3 text-foreground">
+                                <span class="inline-flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-primary text-primary-foreground text-lg">👥</span>
+                                Registered Users
+                            </h3>
+                            <div class="hidden"></div>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-sm">
+                                <thead class="bg-muted text-muted-foreground text-left">
+                                    <tr>
+                                        <th class="p-4 font-semibold">User</th>
+                                        <th class="p-4 font-semibold">Role</th>
+                                        <th class="p-4 font-semibold">Status</th>
+                                        <th class="p-4 font-semibold">Joined</th>
+                                        <!-- <th class="p-4 font-semibold text-right">Actions</th> -->
+                                    </tr>
+                                </thead>
+                                <tbody id="users-tbody" class="divide-y divide-border">
+                                    <!-- Users will be populated by JS -->
+                                    <tr>
+                                        <td colspan="5" class="p-8 text-center text-muted-foreground">
+                                            Loading users...
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Integrity Check Scanning Modal -->
+    <div id="integrity-scanning-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 hidden">
+        <div class="absolute inset-0 bg-black/60 backdrop-blur-sm"></div>
+        <div class="relative w-full max-w-lg rounded-3xl bg-card shadow-2xl border border-border p-8">
+            <div class="text-center">
+                <div class="h-20 w-20 mx-auto mb-6 rounded-full bg-gradient-primary text-primary-foreground grid place-content-center relative">
+                    <svg class="h-10 w-10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+                    </svg>
+                    <div class="absolute inset-0 rounded-full border-4 border-emerald-500/20 border-t-emerald-500 animate-spin"></div>
+                </div>
+                <h3 class="font-bold text-2xl text-foreground mb-2">Verifying File Integrity</h3>
+                <p id="integrity-type-text" class="text-muted-foreground mb-6">Running cryptographic analysis...</p>
+                <div class="space-y-3">
+                    <div class="flex items-center gap-3">
+                        <div class="h-2 w-2 rounded-full bg-emerald-500 animate-pulse"></div>
+                        <span class="text-sm text-muted-foreground">Computing file hashes</span>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <div class="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" style="animation-delay: 0.5s;"></div>
+                        <span class="text-sm text-muted-foreground">Analyzing file metadata</span>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <div class="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" style="animation-delay: 1s;"></div>
+                        <span class="text-sm text-muted-foreground">Verifying digital signatures</span>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <div class="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" style="animation-delay: 1.5s;"></div>
+                        <span class="text-sm text-muted-foreground">Generating verification report</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Image Upload Progress Modal -->
+    <div id="image-upload-progress-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 hidden">
+        <div class="absolute inset-0 bg-black/60 backdrop-blur-sm"></div>
+        <div class="relative w-full max-w-md rounded-3xl bg-card shadow-2xl border border-border p-6">
+            <div class="text-center">
+                <div class="h-16 w-16 mx-auto mb-4 rounded-full bg-gradient-primary text-primary-foreground grid place-content-center">
+                    <svg class="h-8 w-8 animate-spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        <path d="M9 12l2 2 4-4" opacity="0.25"/>
+                    </svg>
+                </div>
+                <h3 class="font-bold text-xl text-foreground mb-2">Uploading Image</h3>
+                <p id="image-upload-file-name" class="text-muted-foreground mb-4">Processing...</p>
+                <div class="w-full bg-muted rounded-full h-3 overflow-hidden mb-4">
+                    <div id="image-upload-progress-bar" class="h-3 rounded-full bg-gradient-to-r from-emerald-500 to-teal-500 transition-all duration-300" style="width: 0%;"></div>
+                </div>
+                <p id="image-upload-progress-text" class="text-sm text-muted-foreground">0%</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Image Analysis Scanning Modal -->
+    <div id="analysis-scanning-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 hidden">
+        <div class="absolute inset-0 bg-black/60 backdrop-blur-sm"></div>
+        <div class="relative w-full max-w-lg rounded-3xl bg-card shadow-2xl border border-border p-8">
+            <div class="text-center">
+                <div class="h-20 w-20 mx-auto mb-6 rounded-full bg-gradient-primary text-primary-foreground grid place-content-center relative">
+                    <svg class="h-10 w-10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+                    </svg>
+                    <div class="absolute inset-0 rounded-full border-4 border-emerald-500/20 border-t-emerald-500 animate-spin"></div>
+                </div>
+                <h3 class="font-bold text-2xl text-foreground mb-2">Analyzing Image</h3>
+                <p id="analysis-type-text" class="text-muted-foreground mb-6">Running advanced AI analysis...</p>
+                <div class="space-y-3">
+                    <div class="flex items-center gap-3">
+                        <div class="h-2 w-2 rounded-full bg-emerald-500 animate-pulse"></div>
+                        <span class="text-sm text-muted-foreground">Processing image metadata</span>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <div class="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" style="animation-delay: 0.5s;"></div>
+                        <span class="text-sm text-muted-foreground">Analyzing pixel patterns</span>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <div class="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" style="animation-delay: 1s;"></div>
+                        <span class="text-sm text-muted-foreground">Running neural network detection</span>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <div class="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" style="animation-delay: 1.5s;"></div>
+                        <span class="text-sm text-muted-foreground">Generating confidence scores</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Text Analysis Scanning Modal -->
+    <div id="text-scanning-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 hidden">
+        <div class="absolute inset-0 bg-black/60 backdrop-blur-sm"></div>
+        <div class="relative w-full max-w-lg rounded-3xl bg-card shadow-2xl border border-border p-8">
+            <div class="text-center">
+                <div class="h-20 w-20 mx-auto mb-6 rounded-full bg-gradient-to-r from-purple-600 to-indigo-600 text-white grid place-content-center">
+                    <svg class="h-10 w-10 animate-spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 012 2h4a2 2 0 012 2z" />
+                    </svg>
+                </div>
+                <h3 class="text-2xl font-bold text-foreground mb-2">Analyzing Text</h3>
+                <p id="text-analysis-type-text" class="text-muted-foreground mb-8">Processing your text with advanced AI algorithms...</p>
+                
+                <div class="space-y-3">
+                    <div class="flex items-center gap-3">
+                        <div class="h-2 w-2 rounded-full bg-purple-500 animate-pulse"></div>
+                        <span class="text-sm text-muted-foreground">Preprocessing text content</span>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <div class="h-2 w-2 rounded-full bg-purple-500 animate-pulse" style="animation-delay: 0.5s;"></div>
+                        <span class="text-sm text-muted-foreground">Analyzing language patterns</span>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <div class="h-2 w-2 rounded-full bg-purple-500 animate-pulse" style="animation-delay: 1s;"></div>
+                        <span class="text-sm text-muted-foreground">Running similarity detection</span>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <div class="h-2 w-2 rounded-full bg-purple-500 animate-pulse" style="animation-delay: 1.5s;"></div>
+                        <span class="text-sm text-muted-foreground">Generating analysis report</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Document Scanning Modal -->
+    <div id="document-scanning-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 hidden">
+        <div class="absolute inset-0 bg-black/60 backdrop-blur-sm"></div>
+        <div class="relative w-full max-w-lg rounded-3xl bg-card shadow-2xl border border-border p-8">
+            <div class="text-center">
+                <div class="h-20 w-20 mx-auto mb-6 rounded-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white grid place-content-center">
+                    <svg class="h-10 w-10 animate-spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                    </svg>
+                </div>
+                <h3 class="text-2xl font-bold text-foreground mb-2">Analyzing Document</h3>
+                <p id="document-analysis-type-text" class="text-muted-foreground mb-8">Processing your document with advanced AI algorithms...</p>
+                
+                <div class="space-y-3">
+                    <div class="flex items-center gap-3">
+                        <div class="h-2 w-2 rounded-full bg-blue-500 animate-pulse"></div>
+                        <span class="text-sm text-muted-foreground">Extracting document content</span>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <div class="h-2 w-2 rounded-full bg-blue-500 animate-pulse" style="animation-delay: 0.5s;"></div>
+                        <span class="text-sm text-muted-foreground">Analyzing document structure</span>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <div class="h-2 w-2 rounded-full bg-blue-500 animate-pulse" style="animation-delay: 1s;"></div>
+                        <span class="text-sm text-muted-foreground">Running similarity detection</span>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <div class="h-2 w-2 rounded-full bg-blue-500 animate-pulse" style="animation-delay: 1.5s;"></div>
+                        <span class="text-sm text-muted-foreground">Generating analysis report</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Document Upload Progress Modal -->
+    <div id="document-upload-progress-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 hidden">
+        <div class="absolute inset-0 bg-black/60 backdrop-blur-sm"></div>
+        <div class="relative w-full max-w-md rounded-3xl bg-card shadow-2xl border border-border p-6">
+            <div class="text-center">
+                <div class="h-16 w-16 mx-auto mb-4 rounded-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white grid place-content-center">
+                    <svg class="h-8 w-8 animate-spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2-2v14a2 2 0 002 2z" />
+                    </svg>
+                </div>
+                <h3 class="font-bold text-xl text-foreground mb-2">Uploading Document</h3>
+                <p class="text-muted-foreground mb-4">Please wait while we process your document...</p>
+                <div class="w-full bg-muted rounded-full h-2">
+                    <div class="bg-gradient-to-r from-blue-600 to-indigo-600 h-2 rounded-full animate-pulse" style="width: 75%"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Upload Progress Modal -->
+    <div id="upload-progress-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 hidden">
+        <div class="absolute inset-0 bg-black/60 backdrop-blur-sm"></div>
+        <div class="relative w-full max-w-md rounded-3xl bg-card shadow-2xl border border-border p-6">
+            <div class="text-center">
+                <div class="h-16 w-16 mx-auto mb-4 rounded-full bg-gradient-primary text-primary-foreground grid place-content-center">
+                    <svg class="h-8 w-8 animate-spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        <path d="M9 12l2 2 4-4" opacity="0.25"/>
+                    </svg>
+                </div>
+                <h3 class="font-bold text-xl text-foreground mb-2">Uploading File</h3>
+                <p id="upload-file-name" class="text-muted-foreground mb-4">Processing...</p>
+                <div class="w-full bg-muted rounded-full h-3 overflow-hidden mb-4">
+                    <div id="upload-progress-bar" class="h-3 rounded-full bg-gradient-to-r from-emerald-500 to-teal-500 transition-all duration-300" style="width: 0%;"></div>
+                </div>
+                <p id="upload-progress-text" class="text-sm text-muted-foreground">0%</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Analysis Options Modal -->
+    <div id="analysis-options-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 hidden">
+        <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" onclick="closeAnalysisModal()"></div>
+        <div class="relative w-full max-w-lg rounded-3xl bg-card shadow-2xl border border-border p-6">
+            <div class="flex items-center justify-between mb-6">
+                <h3 class="font-bold text-xl text-foreground">Choose Analysis Type</h3>
+                <button onclick="closeAnalysisModal()" class="p-2 rounded-xl hover:bg-muted transition-colors">
+                    <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+            
+            <div id="analysis-file-info" class="flex items-center gap-4 mb-6 p-4 rounded-xl bg-muted">
+                <!-- File info will be populated by JavaScript -->
+            </div>
+            
+            <div id="analysis-options" class="space-y-3">
+                <!-- Options will be populated by JavaScript -->
+            </div>
+            
+            <div class="flex items-center justify-end gap-3 mt-6">
+                <button onclick="closeAnalysisModal()" class="px-6 py-3 rounded-xl border border-border hover:bg-muted font-medium transition-colors">
+                    Cancel
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Share Modal -->
+    <div id="share-modal" class="fixed inset-0 z-40 flex items-center justify-center p-4 hidden">
+        <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" onclick="closeShareModal()"></div>
+        <div class="relative w-full max-w-2xl rounded-3xl bg-card shadow-2xl border border-border p-6">
+            <div class="flex items-center justify-between mb-6">
+                <h3 class="font-bold text-xl text-foreground">Share File</h3>
+                <button onclick="closeShareModal()" class="p-2 rounded-xl hover:bg-muted transition-colors">
+                    <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+            <div id="share-file-info" class="flex items-center gap-4 mb-6">
+                <!-- File info will be populated by JavaScript -->
+            </div>
+            <div class="flex items-center justify-end gap-3">
+                <button onclick="closeShareModal()" class="px-6 py-3 rounded-xl border border-border hover:bg-muted font-medium transition-colors">
+                    Cancel
+                </button>
+                <button id="create-link-btn" class="px-6 py-3 rounded-xl bg-gradient-primary text-primary-foreground hover:opacity-90 font-semibold transition-all">
+                    Create link
+                </button>
+            </div>
+        </div>
+    </div>
+
+<script>
+    // Global state
+    let isDark = false;
+    let files = [];
+    let searchQuery = '';
+    let sortBy = 'date-desc';
+    let sidebarOpen = false;
+    let shareModal = null;
+    let currentUploadingFile = null;
+    let currentSection = 'dashboard';
+    let currentImageFile = null;
+    let analysisHistory = [];
+    
+    // Text forensics variables
+    let currentTextContent = '';
+    let textAnalysisHistory = [];
+
+    // Document forensics variables
+    let documentFile = null;
+    let documentAnalysisHistory = [];
+    let currentDocumentAnalysisId = null;
+
+    // Integrity check variables
+    let integrityFile = null;
+    let integrityCheckHistory = [];
+    let currentIntegrityCheckId = null;
+    let userStats = {};
+    // API endpoints
+    const API_BASE = ''; // Relative to current domain
+    const ENDPOINTS = {
+        STATS: '/api/stats/',
+        ALL_FILES: '/api/files/',
+        TEXT_ANALYZE: '/api/text/analyze/',
+        TEXT_HISTORY: '/api/text/history/',
+        ADMIN_TEXT_HISTORY: '/api/admin/text/history/',
+        IMAGE_ANALYZE: '/api/image/analyze/',
+        IMAGE_HISTORY: '/api/image/history/',
+        ADMIN_IMAGE_HISTORY: '/api/admin/image/history/',
+        DOCUMENT_ANALYZE: '/api/document/analyze/',
+        DOCUMENT_HISTORY: '/api/document/history/',
+        ADMIN_DOCUMENT_HISTORY: '/api/admin/document/history/',
+        INTEGRITY_CHECK: '/api/integrity/check/',
+        INTEGRITY_HISTORY: '/api/integrity/history/',
+        ADMIN_INTEGRITY_HISTORY: '/api/admin/integrity/history/',
+        CHECK_AUTH: '/api/auth/status/'
+    };
+
+    // Initialize with real data
+    // Initialize with real data
+    async function initFiles() {
+        console.log('Initializing dashboard data...');
+        
+        // Load independent sections in parallel where possible, or sequentially with individual error handling
+        const loaders = [
+            { name: 'Text History', fn: loadTextHistory },
+            { name: 'Image History', fn: loadImageAnalysisHistory },
+            { name: 'Document History', fn: loadDocumentHistory },
+            { name: 'Integrity History', fn: loadIntegrityHistory },
+            { name: 'All Files', fn: loadAllFiles },
+            { name: 'User Stats', fn: loadUserStats }
+        ];
+
+        for (const loader of loaders) {
+            try {
+                if (typeof loader.fn === 'function') {
+                    await loader.fn();
+                } else {
+                    console.warn(`Loader ${loader.name} is not a function`);
+                }
+            } catch (error) {
+                console.error(`Error loading ${loader.name}:`, error);
+            }
+        }
+
+        updateDashboardStats(); // Update UI after stats load
+        
+        // Setup search listener
+        const searchInput = document.getElementById('search-input');
+        if (searchInput) {
+            let debounceTimer;
+            searchInput.addEventListener('input', (e) => {
+                clearTimeout(debounceTimer);
+                debounceTimer = setTimeout(() => {
+                    loadAllFiles(e.target.value);
+                }, 300);
+            });
+        }
+    }
+
+    async function loadAllFiles(query = '') {
+        try {
+            const url = query ? `${ENDPOINTS.ALL_FILES}?q=${encodeURIComponent(query)}` : ENDPOINTS.ALL_FILES;
+            const response = await fetch(url);
+            const data = await response.json();
+
+            if (data.success) {
+                const tbody = document.getElementById('files-tbody');
+                const countEl = document.getElementById('file-count');
+                
+                if (countEl) countEl.textContent = `${data.count} items`;
+                
+                if (!tbody) return;
+
+                if (data.files.length === 0) {
+                    tbody.innerHTML = `
+                        <tr>
+                            <td colspan="6" class="p-8 text-center text-muted-foreground">
+                                No files found
+                            </td>
+                        </tr>
+                    `;
+                    return;
+                }
+
+                tbody.innerHTML = data.files.map(file => `
+                    <tr class="hover:bg-muted/50 transition-colors group">
+                        <td class="p-4">
+                            <div class="flex items-center gap-3">
+                                ${getFileIcon(file.type)}
+                                <div>
+                                    <div class="font-medium text-foreground group-hover:text-primary transition-colors">${file.name}</div>
+                                    <div class="text-xs text-muted-foreground capitalize">${file.type}</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="p-4">
+                            <div class="flex items-center gap-2">
+                                <div class="h-6 w-6 rounded-full bg-gradient-to-br from-indigo-500 to-purple-500 text-[10px] text-white grid place-content-center font-bold">
+                                    ${file.owner.substring(0, 2).toUpperCase()}
+                                </div>
+                                <span class="text-muted-foreground">${file.owner}</span>
+                            </div>
+                        </td>
+                        <td class="p-4 text-muted-foreground font-mono text-xs">${formatBytes(file.size)}</td>
+                        <td class="p-4 text-muted-foreground">${timeAgo(file.modified)}</td>
+                        <td class="p-4">
+                            <div class="flex -space-x-2">
+                                <div class="h-6 w-6 rounded-full bg-muted border-2 border-card"></div>
+                            </div>
+                        </td>
+                        <td class="p-4 text-right">
+                            <button class="p-2 rounded-lg hover:bg-muted text-muted-foreground hover:text-foreground transition-colors">
+                                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <circle cx="12" cy="12" r="1" />
+                                    <circle cx="19" cy="12" r="1" />
+                                    <circle cx="5" cy="12" r="1" />
+                                </svg>
+                            </button>
+                        </td>
+                    </tr>
+               
+                    </tr>
+                `).join('');
+                
+            }
+        } catch (error) {
+            console.error('Error loading all files:', error);
+        }
+    }
+    function updateStatsCards() {
+    // Scans Today
+    const scansTodayEl = document.getElementById('scans-today-value');
+    if (scansTodayEl) scansTodayEl.textContent = userStats.scans_today || 0;
+    
+    // Total Scans
+    const totalScansEl = document.getElementById('total-scans-value');
+    if (totalScansEl) totalScansEl.textContent = userStats.total_scans || 0;
+    
+    // Threats Detected
+    const threatsEl = document.getElementById('threats-detected-value');
+    if (threatsEl) {
+        threatsEl.textContent = userStats.threats_detected || 0;
+        threatsEl.parentElement.classList.add(userStats.threats_detected > 0 ? 'text-destructive' : 'text-emerald-600');
+    }
+    
+    // Avg Confidence
+    const avgConfEl = document.getElementById('avg-confidence-value');
+    if (avgConfEl) avgConfEl.textContent = `${userStats.avg_confidence || 0}%`;
+    
+    // Avg Processing
+    const avgProcEl = document.getElementById('avg-processing-value');
+    if (avgProcEl) avgProcEl.textContent = `${userStats.avg_processing || 0}s`;
+    
+    // All Files
+    const allFilesEl = document.getElementById('all-files-value');
+    if (allFilesEl) allFilesEl.textContent = userStats.all_files || 0;
+    
+    // Analysis Stats (update a breakdown section if exists, e.g., pie chart or list)
+    const analysisBreakdownEl = document.getElementById('analysis-breakdown');
+    if (analysisBreakdownEl && userStats.analysis_stats) {
+        analysisBreakdownEl.innerHTML = `
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                ${Object.entries(userStats.analysis_stats).map(([type, count]) => `
+                    <div class="text-center p-2 bg-muted rounded-lg">
+                        <div class="text-sm font-medium text-muted-foreground">${type.charAt(0).toUpperCase() + type.slice(1)}</div>
+                        <div class="text-lg font-bold text-foreground">${count}</div>
+                    </div>
+                `).join('')}
+            </div>
+        `;
+    }
+}
+async function loadUserStats() {
+    try {
+        const response = await fetch(ENDPOINTS.STATS);  // Assumes ENDPOINTS.STATS = '/api/stats/'
+        const data = await response.json();
+        
+        if (data.success) {
+            const stats = data.stats;
+            
+            // Update Scans Today (with progress bar example: 73% of some max, adjust as needed)
+            document.getElementById('scans-today').textContent = stats.scans_today.toLocaleString();
+            document.getElementById('scans-progress').style.width = `${Math.min((stats.scans_today / 5000) * 100, 100)}%`;  // Example: Cap at 5000/day
+            
+            // Total Scans
+            const mainTotalScans = document.getElementById('main-total-scans');
+            if (mainTotalScans) mainTotalScans.textContent = stats.total_scans.toLocaleString();
+            
+            // Threats Detected
+            const mainThreatsDetected = document.getElementById('main-threats-detected');
+            if (mainThreatsDetected) mainThreatsDetected.textContent = stats.threats_detected.toLocaleString();
+            
+            // Avg Confidence
+            const mainAvgConfidence = document.getElementById('main-avg-confidence');
+            if (mainAvgConfidence) mainAvgConfidence.textContent = `${stats.avg_confidence}%`;
+            
+            // Avg Processing
+            const mainAvgProcessing = document.getElementById('main-avg-processing');
+            if (mainAvgProcessing) mainAvgProcessing.textContent = `${stats.avg_processing}s`;
+            
+            // Hide loading (if you add it)
+            document.getElementById('stats-container').classList.remove('opacity-50');
+            
+            console.log('Stats loaded:', stats);
+        } else {
+            console.warn('Failed to load stats:', data);
+            // Fallback to hardcoded (your original values)
+            document.getElementById('scans-today').textContent = '2,847';
+        }
+    } catch (error) {
+        console.error('Error loading stats:', error);
+        // Fallback
+        document.getElementById('scans-today').textContent = '2,847';
+    }
+}
+// Theme management
+    function initTheme() {
+        const saved = localStorage.getItem("theme");
+        const shouldBeDark = saved === "dark";
+
+        isDark = shouldBeDark;
+        document.documentElement.classList.toggle("dark", shouldBeDark);
+        updateThemeIcon();
+    }
+
+    function toggleTheme() {
+        isDark = !isDark;
+        localStorage.setItem("theme", isDark ? "dark" : "light");
+        document.documentElement.classList.toggle("dark", isDark);
+        updateThemeIcon();
+    }
+
+    function updateThemeIcon() {
+        const sunIcon = document.getElementById('sun-icon');
+        const moonIcon = document.getElementById('moon-icon');
+        if (isDark) {
+            sunIcon.classList.add('hidden');
+            moonIcon.classList.remove('hidden');
+        } else {
+            sunIcon.classList.remove('hidden');
+            moonIcon.classList.add('hidden');
+        }
+    }
+
+    // Utility functions
+    function formatBytes(bytes) {
+        if (bytes === 0) return "0 B";
+        const k = 1024;
+        const sizes = ["B", "KB", "MB", "GB"];
+        const i = Math.floor(Math.log(bytes) / Math.log(k));
+        return Number.parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + " " + sizes[i];
+    }
+
+    function timeAgo(timestamp) {
+        if (!timestamp) return 'Unknown';
+        
+        const date = new Date(timestamp);
+        if (isNaN(date.getTime())) return 'Invalid date';
+        
+        const now = new Date();
+        const diff = now - date;
+        const minutes = Math.floor(diff / 60000);
+        const hours = Math.floor(diff / 3600000);
+        const days = Math.floor(diff / 86400000);
+
+        if (days > 0) return `${days}d ago`;
+        if (hours > 0) return `${hours}h ago`;
+        if (minutes > 0) return `${minutes}m ago`;
+        return "Just now";
+    }
+// Utility: Show success/error alerts as floating toasts
+function showAlert(message, type = 'success') {
+    // Remove any existing alerts
+    const existingAlert = document.getElementById('global-alert');
+    if (existingAlert) {
+        existingAlert.remove();
+    }
+    
+    // Create alert element
+    const alert = document.createElement('div');
+    alert.id = 'global-alert';
+    alert.className = `fixed top-4 right-4 z-50 p-4 rounded-xl shadow-xl transform translate-x-full transition-transform duration-300 ease-in-out max-w-sm w-full ${
+        type === 'success' ? 'bg-emerald-500 text-white' : 'bg-red-500 text-white'
+    }`;
+    alert.innerHTML = `
+        <div class="flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <svg class="h-5 w-5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    ${type === 'success' ? 
+                        '<path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />' : 
+                        '<path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />'
+                    }
+                </svg>
+                <span class="font-medium">${type === 'success' ? 'Success' : 'Error'}</span>
+            </div>
+            <div class="flex items-center gap-2">
+                <span class="text-sm opacity-90">${message}</span>
+                <button onclick="this.parentElement.parentElement.parentElement.remove()" class="ml-2 text-white hover:opacity-70">
+                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+    `;
+    
+    // Append to body and animate in
+    document.body.appendChild(alert);
+    requestAnimationFrame(() => alert.classList.remove('translate-x-full'));
+    
+    // Auto-remove after 5 seconds
+    setTimeout(() => {
+        alert.classList.add('translate-x-full');
+        setTimeout(() => alert.remove(), 300);
+    }, 5000);
+}
+    function getFileIcon(type) {
+        const iconClass = "h-5 w-5";
+        const wrapperClass = "h-9 w-9 rounded-lg grid place-content-center";
+
+        if (type && type.includes("image")) {
+            return `<div class="${wrapperClass} bg-amber-50 dark:bg-amber-500/10 text-amber-700 dark:text-amber-300">
+                <svg class="${iconClass}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="5" width="18" height="14" rx="2" />
+                    <path d="M8 13l3-3 4 4 2-2 3 3" />
+                    <circle cx="8.5" cy="9.5" r="1.5" />
+                </svg>
+            </div>`;
+        }
+
+        if (type && type.includes("video")) {
+            return `<div class="${wrapperClass} bg-violet-50 dark:bg-violet-500/10 text-violet-700 dark:text-violet-300">
+                <svg class="${iconClass}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="5" width="18" height="14" rx="2" />
+                    <path d="M10 9l5 3-5 3V9z" />
+                </svg>
+            </div>`;
+        }
+
+        if (type && type.includes("audio")) {
+            return `<div class="${wrapperClass} bg-rose-50 dark:bg-rose-500/10 text-rose-700 dark:text-rose-300">
+                <svg class="${iconClass}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M9 18V5l12-2v13" />
+                    <circle cx="6" cy="18" r="3" />
+                    <circle cx="18" cy="16" r="3" />
+                </svg>
+            </div>`;
+        }
+
+        if (type && (type.includes("zip") || type.includes("archive"))) {
+            return `<div class="${wrapperClass} bg-emerald-50 dark:bg-emerald-500/10 text-emerald-700 dark:text-emerald-300">
+                <svg class="${iconClass}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M7 3h10v18H7z" />
+                    <path d="M15 3v5h5" />
+                </svg>
+            </div>`;
+        }
+
+        return `<div class="${wrapperClass} bg-sky-50 dark:bg-sky-500/10 text-sky-700 dark:text-sky-300">
+            <svg class="${iconClass}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M7 3h8l4 4v14a2 2 0 01-2 2H7a2 2 0 01-2-2V5a2 2 0 012-2z" />
+                <path d="M15 3v5h5" />
+            </svg>
+        </div>`;
+    }
+
+    // Dashboard stats
+    async function updateDashboardStats() {
+        try {
+            // Calculate stats from actual data
+            const totalScans = textAnalysisHistory.length + analysisHistory.length;
+            const threatsDetected = textAnalysisHistory.filter(item => 
+                item.result.includes('Plagiarism') || item.result.includes('AI Generated')
+            ).length + analysisHistory.filter(item => 
+                item.result.includes('Forged') || item.result.includes('AI Generated')
+            ).length;
+            
+            const avgConfidence = calculateAverageConfidence();
+            const avgProcessingTime = '1.2s'; // This would come from backend in a real scenario
+
+            // Update DOM elements
+            const totalScansEl = document.querySelector('.stat-card:first-child .text-3xl');
+            const threatsEl = document.querySelector('.stat-card:nth-child(2) .text-3xl');
+            const confidenceEl = document.querySelector('.stat-card:nth-child(3) .text-3xl');
+            const processingEl = document.querySelector('.stat-card:nth-child(4) .text-3xl');
+
+            if (totalScansEl) totalScansEl.textContent = totalScans.toLocaleString();
+            if (threatsEl) threatsEl.textContent = threatsDetected.toLocaleString();
+            if (confidenceEl) confidenceEl.textContent = `${avgConfidence}%`;
+            if (processingEl) processingEl.textContent = avgProcessingTime;
+
+        } catch (error) {
+            console.error('Error updating dashboard stats:', error);
+        }
+    }
+
+    function calculateAverageConfidence() {
+        const allAnalyses = [...textAnalysisHistory, ...analysisHistory];
+        if (allAnalyses.length === 0) return '0.0';
+        
+        const totalConfidence = allAnalyses.reduce((sum, item) => sum + (item.confidence || 0), 0);
+        return (totalConfidence / allAnalyses.length).toFixed(1);
+    }
+
+    // Section Management
+// Enhanced showSection function with HISTORY LOADING
+function showSection(sectionName) {
+    // Hide all sections
+    document.querySelectorAll('[id$="-section"]').forEach(el => el.classList.add('hidden'));
+    
+    // Show target section
+    const targetSection = document.getElementById(`${sectionName}-section`);
+    if (targetSection) {
+        targetSection.classList.remove('hidden');
+    }
+    
+    // Update nav active state
+    document.querySelectorAll('.nav-link').forEach(link => {
+        // Reset to inactive state
+        link.classList.remove('bg-gradient-primary', 'text-primary-foreground', 'shadow-lg');
+        link.classList.add('hover:bg-muted', 'text-foreground'); // Default text color
+        
+        // Reset icon to muted
+        const icon = link.querySelector('svg');
+        if (icon) {
+            icon.classList.add('text-muted-foreground');
+            icon.classList.remove('text-primary-foreground');
+        }
+    });
+
+    const activeNav = document.querySelector(`[onclick="showSection('${sectionName}')"]`);
+    if (activeNav) {
+        // Set to active state
+        activeNav.classList.add('bg-gradient-primary', 'text-primary-foreground', 'shadow-lg');
+        activeNav.classList.remove('hover:bg-muted', 'text-foreground');
+        
+        // Set icon to active (white/contrast)
+        const activeIcon = activeNav.querySelector('svg');
+        if (activeIcon) {
+            activeIcon.classList.remove('text-muted-foreground');
+            activeIcon.classList.add('text-primary-foreground');
+        }
+    }
+    
+    // Load data based on section
+    switch(sectionName) {
+        case 'dashboard':
+            loadUserStats();  // Existing
+            break;
+        case 'user-management':
+            loadUsers();
+            break;
+        case 'text-forensics':
+            if (typeof loadTextHistory === 'function') loadTextHistory();
+            break;
+        case 'document-forensics':
+            if (typeof loadDocumentHistory === 'function') loadDocumentHistory();
+            break;
+        case 'integrity-check':
+            if (typeof loadIntegrityHistory === 'function') loadIntegrityHistory();
+            break;
+        case 'image-forensics':
+            if (typeof loadImageAnalysisHistory === 'function') loadImageAnalysisHistory();
+            break;
+        default:
+            console.warn(`No loader for: ${sectionName}`);
+    }
+}
+    // Image Upload Functions
+    function handleImageUpload(file) {
+        console.log('handleImageUpload called with:', file);
+        
+        if (!file || !file.type.startsWith('image/')) {
+            console.error('Invalid file type:', file?.type);
+            alert('Please select a valid image file');
+            return;
+        }
+
+        if (file.size > 10 * 1024 * 1024) {
+            console.error('File too large:', file.size);
+            alert('File size must be less than 10MB');
+            return;
+        }
+
+        console.log('File validation passed, starting upload process');
+        currentImageFile = file;
+        showImageUploadProgress(file);
+        simulateImageUploadProgress(file);
+    }
+
+    function showImageUploadProgress(file) {
+        const modal = document.getElementById('image-upload-progress-modal');
+        const fileName = document.getElementById('image-upload-file-name');
+        const progressBar = document.getElementById('image-upload-progress-bar');
+        const progressText = document.getElementById('image-upload-progress-text');
+
+        fileName.textContent = file.name;
+        progressBar.style.width = '0%';
+        progressText.textContent = '0%';
+        modal.classList.remove('hidden');
+    }
+
+    function simulateImageUploadProgress(file) {
+        let progress = 0;
+        const interval = setInterval(() => {
+            progress += Math.random() * 20;
+            if (progress >= 100) {
+                progress = 100;
+                clearInterval(interval);
+                
+                setTimeout(() => {
+                    document.getElementById('image-upload-progress-modal').classList.add('hidden');
+                    showImagePreview(file);
+                }, 500);
+            }
+            
+            const progressBar = document.getElementById('image-upload-progress-bar');
+            const progressText = document.getElementById('image-upload-progress-text');
+            progressBar.style.width = `${progress}%`;
+            progressText.textContent = `${Math.round(progress)}%`;
+        }, 150);
+    }
+
+    function showImagePreview(file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const imagePreview = document.getElementById('image-preview');
+            const imageInfo = document.getElementById('image-info');
+            const analysisSection = document.getElementById('image-analysis-section');
+            
+            imagePreview.src = e.target.result;
+            imageInfo.innerHTML = `
+                <div class="flex items-center justify-between">
+                    <div>
+                        <div class="font-semibold text-foreground">${file.name}</div>
+                        <div class="text-sm text-muted-foreground">
+                            ${formatBytes(file.size)} • ${file.type} • ${new Date().toLocaleDateString()}
+                        </div>
+                    </div>
+                    <div class="text-sm font-medium text-emerald-600">Ready for analysis</div>
+                </div>
+            `;
+            
+            analysisSection.classList.remove('hidden');
+            analysisSection.scrollIntoView({ behavior: 'smooth' });
+        };
+        reader.readAsDataURL(file);
+    }
+
+    function removeImage() {
+        currentImageFile = null;
+        document.getElementById('image-analysis-section').classList.add('hidden');
+        document.getElementById('analysis-results-section').classList.add('hidden');
+        document.getElementById('image-file-input').value = '';
+    }
+
+    async function startImageAnalysis(analysisType) {
+        if (!currentImageFile) return;
+        
+        const analysisTypeText = document.getElementById('analysis-type-text');
+        const modal = document.getElementById('analysis-scanning-modal');
+        
+        analysisTypeText.textContent = analysisType === 'forgery' ? 
+            'Detecting image forgery and manipulation...' : 
+            'Analyzing for AI-generated content...';
+        
+        modal.classList.remove('hidden');
+        
+        try {
+            const formData = new FormData();
+            formData.append('image', currentImageFile);
+            formData.append('analysisType', analysisType);
+            
+            const response = await fetch(ENDPOINTS.IMAGE_ANALYZE, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRFToken': getCSRFToken()
+                }
+            });
+            
+            const data = await response.json();
+            modal.classList.add('hidden');
+            
+            if (data.success) {
+                showImageAnalysisResults(data, analysisType);
+                await loadImageAnalysisHistory(); // Refresh history
+                updateDashboardStats(); // Update dashboard
+            } else {
+                alert('Analysis failed: ' + (data.message || 'Unknown error'));
+            }
+            
+        } catch (error) {
+            modal.classList.add('hidden');
+            console.error('Image analysis error:', error);
+            alert('Error during image analysis');
+        }
+    }
+
+    function showImageAnalysisResults(data, analysisType) {
+        const resultsSection = document.getElementById('analysis-results-section');
+        const reportContent = document.getElementById('analysis-report-content');
+        
+        const analysisTime = data.date ? new Date(data.date) : new Date();
+        const confidence = data.confidence || 0;
+        const result = data.result || 'Unknown';
+        const analysisId = data.id || `IMG_${Date.now()}`;
+        
+        reportContent.innerHTML = `
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="space-y-4">
+                    <div class="p-4 rounded-xl bg-muted">
+                        <h4 class="font-semibold text-foreground mb-2">Analysis Summary</h4>
+                        <div class="space-y-2">
+                            <div class="flex justify-between">
+                                <span class="text-muted-foreground">Analysis Type:</span>
+                                <span class="font-medium text-foreground">${analysisType === 'forgery' ? 'Image Forgery Detection' : 'AI Generated Detection'}</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-muted-foreground">Result:</span>
+                                <span class="font-bold ${getResultColor(result)}">${result}</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-muted-foreground">Confidence:</span>
+                                <span class="font-bold text-foreground">${confidence}%</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-muted-foreground">Analysis ID:</span>
+                                <span class="font-mono text-sm text-muted-foreground">${analysisId}</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="p-4 rounded-xl bg-muted">
+                        <h4 class="font-semibold text-foreground mb-2">Technical Details</h4>
+                        <div class="space-y-1 text-sm text-muted-foreground">
+                            ${data.technicalDetails ? Object.entries(data.technicalDetails).map(([key, value]) => 
+                                `<div>• ${key}: ${value}</div>`
+                            ).join('') : '<div>• Detailed technical analysis completed</div>'}
+                            <div>• Processing time: ${data.processingTime || 'N/A'}</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="space-y-4">
+                    <div class="p-4 rounded-xl bg-muted">
+                        <h4 class="font-semibold text-foreground mb-2">Confidence Breakdown</h4>
+                        <div class="space-y-3">
+                            <div>
+                                <div class="flex justify-between text-sm mb-1">
+                                    <span>Pattern Analysis</span>
+                                    <span>${Math.floor(Math.random() * 20) + 80}%</span>
+                                </div>
+                                <div class="w-full bg-border rounded-full h-2">
+                                    <div class="bg-emerald-500 h-2 rounded-full" style="width: ${Math.floor(Math.random() * 20) + 80}%"></div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="flex justify-between text-sm mb-1">
+                                    <span>Metadata Consistency</span>
+                                    <span>${Math.floor(Math.random() * 30) + 60}%</span>
+                                </div>
+                                <div class="w-full bg-border rounded-full h-2">
+                                    <div class="bg-blue-500 h-2 rounded-full" style="width: ${Math.floor(Math.random() * 30) + 60}%"></div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="flex justify-between text-sm mb-1">
+                                    <span>AI Signature Detection</span>
+                                    <span>${Math.floor(Math.random() * 25) + 70}%</span>
+                                </div>
+                                <div class="w-full bg-border rounded-full h-2">
+                                    <div class="bg-purple-500 h-2 rounded-full" style="width: ${Math.floor(Math.random() * 25) + 70}%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="p-4 rounded-xl bg-muted">
+                        <h4 class="font-semibold text-foreground mb-2">Recommendations</h4>
+                        <div class="text-sm text-muted-foreground space-y-1">
+                            ${getRecommendations(result)}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        // Add to local history for immediate UI update
+        analysisHistory.unshift({
+            id: analysisId,
+            fileName: currentImageFile.name,
+            analysisType: analysisType === 'forgery' ? 'Image Forgery Detection' : 'AI Generated Detection',
+            result: result,
+            confidence: confidence,
+            date: analysisTime,
+            imageData: document.getElementById('image-preview').src
+        });
+        
+        updateHistoryTable();
+        resultsSection.classList.remove('hidden');
+        resultsSection.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function getResultColor(result) {
+        if (result.includes('Authentic') || result.includes('Human Created') || result.includes('Original')) return 'text-emerald-600';
+        if (result.includes('Suspicious') || result.includes('Uncertain') || result.includes('Possible')) return 'text-amber-600';
+        return 'text-red-600';
+    }
+
+    function getRecommendations(result) {
+        const recommendations = {
+            'Authentic': '• Image appears to be genuine with no signs of manipulation\n• High confidence in authenticity based on pixel analysis\n• Metadata is consistent with capture information',
+            'Human Created': '• Image shows characteristics consistent with traditional photography\n• No AI generation signatures detected\n• Natural lighting and texture patterns observed',
+            'Suspicious': '• Some inconsistencies detected that warrant further investigation\n• Consider cross-referencing with source verification\n• Manual review recommended for critical applications',
+            'Uncertain': '• Mixed signals detected in the analysis\n• Additional verification methods recommended\n• Consider seeking expert human review',
+            'Forged': '• Strong indicators of digital manipulation detected\n• Do not use for official purposes without further verification\n• Consider reverse image search for original source',
+            'AI Generated': '• Clear AI generation signatures detected\n• Image likely created by artificial intelligence\n• Exercise caution in contexts requiring authentic imagery'
+        };
+        
+        const key = Object.keys(recommendations).find(k => result.includes(k)) || 'Uncertain';
+        return recommendations[key].split('\n').join('<br>');
+    }
+
+    function updateHistoryTable() {
+        const tbody = document.getElementById('image-history-tbody');
+        const countEl = document.getElementById('image-history-count');
+        
+        if (countEl) countEl.textContent = `${analysisHistory.length} items`;
+        
+        if (!tbody) return;
+        
+        if (analysisHistory.length === 0) {
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="7" class="p-8 text-center text-muted-foreground font-medium">
+                        No image analysis history found.
+                    </td>
+                </tr>
+            `;
+            return;
+        }
+        
+        tbody.innerHTML = analysisHistory.map(item => `
+            <tr class="border-b border-border hover:bg-muted/50 transition-colors">
+                <td class="p-4">
+                    <div class="flex items-center gap-3">
+                        <div class="h-10 w-10 rounded-lg bg-muted overflow-hidden">
+                            ${item.imageData ? `<img src="${item.imageData}" class="h-full w-full object-cover" alt="Preview">` : '<div class="h-full w-full grid place-content-center bg-secondary text-secondary-foreground">?</div>'}
+                        </div>
+                        <div>
+                            <div class="font-medium text-foreground">${item.fileName}</div>
+                            <div class="text-xs text-muted-foreground">${formatBytes(item.fileSize || 0)}</div>
+                        </div>
+                    </div>
+                </td>
+                <td class="p-4">
+                   <div class="flex items-center gap-2">
+                        <div class="h-6 w-6 rounded-full bg-gradient-to-br from-indigo-500 to-purple-500 text-[10px] text-white grid place-content-center font-bold">
+                            ${item.user ? item.user.substring(0, 2).toUpperCase() : '??'}
+                        </div>
+                        <span class="text-sm font-medium text-foreground">${item.user || 'Unknown'}</span>
+                    </div>
+                </td>
+                <td class="p-4 hidden md:table-cell text-muted-foreground font-medium">${item.analysisType || 'Forgery Detection'}</td>
+                <td class="p-4">
+                    <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold ${getResultColor(item.result)}">
+                        ${item.result}
+                    </span>
+                </td>
+                <td class="p-4 hidden sm:table-cell">
+                    <div class="text-sm font-medium text-foreground">${item.confidence}%</div>
+                    <div class="w-full bg-muted rounded-full h-1.5 mt-1">
+                        <div class="bg-primary h-1.5 rounded-full" style="width: ${item.confidence}%"></div>
+                    </div>
+                </td>
+                <td class="p-4 hidden lg:table-cell text-muted-foreground font-medium text-sm">${timeAgo(item.date)}</td>
+                <td class="p-4 text-right">
+                    <div class="inline-flex items-center gap-2">
+                        <button onclick="downloadImageReport('${item.id}')" class="px-3 py-2 rounded-xl bg-gradient-primary text-primary-foreground hover:opacity-90 text-xs font-semibold transition-all">
+                            Download
+                        </button>
+                    </div>
+                </td>
+            </tr>
+        `).join('');
+    }
+
+    async function loadImageAnalysisHistory() {
+        try {
+            const response = await fetch(ENDPOINTS.ADMIN_IMAGE_HISTORY);
+            const data = await response.json();
+            
+            if (data.success && Array.isArray(data.history)) {
+                analysisHistory = data.history.map(item => ({
+                    id: item.id,
+                    user: item.user,
+                    fileName: item.file_name || item.fileName,
+                    analysisType: item.analysis_type || item.analysisType,
+                    result: item.result,
+                    confidence: item.confidence,
+                    date: new Date(item.date),
+                    imageData: item.image_url || '/static/images/placeholder.jpg',
+                    status: item.status,
+                    processingTime: item.processingTime,
+                    fileSize: item.file_size || item.fileSize
+                }));
+                
+                updateHistoryTable();
+            }
+        } catch (error) {
+            console.error('Error loading image analysis history:', error);
+        }
+    }
+
+function updateTextHistoryTable() {
+    // Add null checks to prevent errors
+    const tbody = document.getElementById('text-history-tbody');
+    const historyCountEl = document.getElementById('text-history-count');  // Assuming this ID based on error context
+    
+    // Safely update count if element exists
+    if (historyCountEl) {
+        historyCountEl.textContent = `${textAnalysisHistory.length || 0} items`;
+    } else {
+        console.warn('Text history count element not found (#text-history-count)');
+    }
+    
+    if (!tbody) {
+        console.error('Text history table body not found (#text-history-tbody)');
+        return;  // Exit early to avoid further errors
+    }
+    
+    if (textAnalysisHistory.length === 0) {
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="6" class="p-8 text-center text-muted-foreground font-medium">
+                    No text analysis history yet. Run an analysis to get started!
+                </td>
+            </tr>
+        `;
+        return;
+    }
+    
+    tbody.innerHTML = textAnalysisHistory.map(item => `
+        <tr class="hover:bg-muted/50 transition-colors">
+            <td class="p-4">
+                <div class="max-w-xs">
+                    <div class="font-medium text-foreground truncate" title="${item.textPreview || 'N/A'}">${item.textPreview || 'N/A'}</div>
+                    <div class="text-sm text-muted-foreground">${item.wordCount || 0} words • ID: ${item.id}</div>
+                </div>
+            </td>
+            <td class="p-4 text-muted-foreground font-medium">${item.analysisType || 'Unknown'}</td>
+            <td class="p-4">
+                <span class="inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-xs font-semibold ${getResultColor(item.result)}">
+                    ${item.result || 'N/A'}
+                </span>
+            </td>
+            <td class="p-4 font-semibold text-foreground">${item.confidence || 0}%</td>
+            <td class="p-4 text-muted-foreground font-medium">${timeAgo(new Date(item.date))}</td>
+            <td class="p-4 text-right">
+                <div class="inline-flex items-center gap-2">
+                    <button onclick="viewTextDetails('${item.id}')" class="px-3 py-2 rounded-xl bg-gradient-primary text-primary-foreground hover:opacity-90 text-xs font-semibold transition-all">
+                        View
+                    </button>
+                </div>
+            </td>
+        </tr>
+    `).join('');
+}    
+function downloadImageReport(analysisId) {
+        const analysis = analysisHistory.find(item => item.id == analysisId);
+        if (!analysis) return;
+        
+        const report = `
+FORENSIC ANALYSIS REPORT
+========================
+
+Analysis ID: ${analysis.id}
+File Name: ${analysis.fileName}
+Analysis Type: ${analysis.analysisType}
+Result: ${analysis.result}
+Confidence: ${analysis.confidence}%
+Date: ${analysis.date.toLocaleString()}
+Processing Time: ${analysis.processingTime || 'N/A'}
+File Size: ${analysis.fileSize || 'N/A'}
+
+This report was generated by TrueVision Image Analysis System.
+        `.trim();
+        
+        const blob = new Blob([report], { type: 'text/plain' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `ForensicReport_${analysis.id}.txt`;
+        a.click();
+        URL.revokeObjectURL(url);
+    }
+
+    // Text Forensics Functions
+    function updateTextCharCount() {
+        const textInput = document.getElementById('text-input');
+        const charCount = document.getElementById('text-char-count');
+        const plagiarismBtn = document.getElementById('plagiarism-detection-btn');
+        const aiTextBtn = document.getElementById('ai-text-detection-btn');
+        
+        if (textInput && charCount) {
+            const length = textInput.value.length;
+            charCount.textContent = length.toLocaleString();
+            
+            const minLength = 50;
+            const hasEnoughText = length >= minLength;
+            
+            if (plagiarismBtn) plagiarismBtn.disabled = !hasEnoughText;
+            if (aiTextBtn) aiTextBtn.disabled = !hasEnoughText;
+        }
+    }
+
+    async function startTextAnalysis(analysisType) {
+        const textInput = document.getElementById('text-input');
+        if (!textInput || textInput.value.trim().length < 50) {
+            alert('Please enter at least 50 characters of text for analysis');
+            return;
+        }
+
+        currentTextContent = textInput.value.trim();
+        
+        const analysisTypeText = document.getElementById('text-analysis-type-text');
+        const modal = document.getElementById('text-scanning-modal');
+        
+        analysisTypeText.textContent = analysisType === 'plagiarism' ? 
+            'Checking for plagiarism and content similarity...' : 
+            'Analyzing for AI-generated content patterns...';
+        
+        modal.classList.remove('hidden');
+
+        try {
+            const response = await fetch(ENDPOINTS.TEXT_ANALYZE, {
+                method: 'POST',
+                headers: { 
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCSRFToken()
+                },
+                body: JSON.stringify({ 
+                    text: currentTextContent, 
+                    analysisType: analysisType 
+                })
+            });
+
+            const data = await response.json();
+            modal.classList.add('hidden');
+
+            if (!data.success) {
+                alert('Analysis failed: ' + (data.message || 'Unknown error'));
+                return;
+            }
+
+            // Add to local history
+            textAnalysisHistory.unshift({
+                id: data.id,
+                textPreview: data.textPreview,
+                fullText: data.fullText,
+                analysisType: analysisType === 'plagiarism' ? 'Plagiarism Detection' : 'AI Detection',
+                result: data.result,
+                confidence: data.confidence,
+                date: new Date(data.date),
+                wordCount: data.word_count || data.wordCount,
+                match_percent: data.match_percent,
+                matched_excerpt: data.matched_excerpt,
+                matched_id: data.matched_id
+            });
+
+            showTextAnalysisResults(data);
+            updateTextHistoryTable();
+            updateDashboardStats();
+
+        } catch (error) {
+            modal.classList.add('hidden');
+            console.error('Text analysis error:', error);
+            alert('Error running analysis');
+        }
+    }
+
+    function showTextAnalysisResults(data) {
+        const resultsSection = document.getElementById('text-analysis-results-section');
+        const reportContent = document.getElementById('text-analysis-report-content');
+
+        const analysisTime = data.date ? new Date(data.date) : new Date();
+        const confidence = data.confidence || 0;
+        const result = data.result || 'Unknown';
+        const analysisId = data.id;
+        const wordCount = data.word_count || data.wordCount || 0;
+        const textPreview = data.textPreview || '';
+
+        reportContent.innerHTML = `
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="space-y-4">
+                    <div class="p-4 rounded-xl bg-muted">
+                        <h4 class="font-semibold text-foreground mb-2">Analysis Summary</h4>
+                        <div class="space-y-2">
+                            <div class="flex justify-between">
+                                <span class="text-muted-foreground">Result:</span>
+                                <span class="font-bold ${getTextResultColor(result)}">${result}</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-muted-foreground">Confidence:</span>
+                                <span class="font-bold text-foreground">${confidence}%</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-muted-foreground">Words:</span>
+                                <span class="font-medium text-foreground">${wordCount} words</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-muted-foreground">Analysis ID:</span>
+                                <span class="font-mono text-sm text-muted-foreground">${analysisId}</span>
+                            </div>
+                            ${data.match_percent ? `
+                            <div class="flex justify-between">
+                                <span class="text-muted-foreground">Similarity Score:</span>
+                                <span class="font-medium text-foreground">${data.match_percent}%</span>
+                            </div>
+                            ` : ''}
+                        </div>
+                    </div>
+
+                    <div class="p-4 rounded-xl bg-muted">
+                        <h4 class="font-semibold text-foreground mb-2">Key Findings</h4>
+                        <div class="text-sm text-muted-foreground space-y-2">
+                            ${data.reasoning ? `<p><strong>Reasoning:</strong> ${data.reasoning}</p>` : ''}
+                            ${data.indicators ? `
+                                <div><strong>Indicators:</strong></div>
+                                <ul class="list-disc list-inside space-y-1">
+                                    ${data.indicators.map(indicator => `<li>${indicator}</li>`).join('')}
+                                </ul>
+                            ` : ''}
+                            ${data.issues ? `
+                                <div><strong>Issues:</strong></div>
+                                <ul class="list-disc list-inside space-y-1">
+                                    ${data.issues.map(issue => `<li>${issue}</li>`).join('')}
+                                </ul>
+                            ` : ''}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="space-y-4">
+                    <div class="p-4 rounded-xl border border-border">
+                        <h4 class="font-semibold text-foreground mb-3">Text Preview</h4>
+                        <div class="text-sm text-muted-foreground max-h-32 overflow-y-auto">
+                            ${textPreview}
+                        </div>
+                        ${data.matched_excerpt ? `
+                        <div class="mt-3">
+                            <h5 class="font-semibold text-foreground mb-2">Similar Content Found</h5>
+                            <div class="text-sm text-muted-foreground max-h-24 overflow-y-auto">
+                                ${data.matched_excerpt}
+                            </div>
+                        </div>
+                        ` : ''}
+                    </div>
+
+                    <div class="p-4 rounded-xl bg-muted">
+                        <h4 class="font-semibold text-foreground mb-2">Recommendations</h4>
+                        <div class="text-sm text-muted-foreground space-y-1">
+                            ${getTextRecommendations(result)}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        resultsSection.classList.remove('hidden');
+        resultsSection.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function getTextResultColor(result) {
+        if (result.includes('Original') || result.includes('Human Written')) return 'text-emerald-600';
+        if (result.includes('Similar') || result.includes('Mixed') || result.includes('Possible')) return 'text-amber-600';
+        return 'text-red-600';
+    }
+
+    function getTextRecommendations(result) {
+        const recommendations = {
+            'Original Content': '• Content appears to be original with no significant similarities found\n• High confidence in authenticity based on language analysis\n• Safe to use for academic or professional purposes',
+            'Human Written': '• Text shows characteristics consistent with human writing\n• Natural language patterns and style variations detected\n• No AI generation signatures found',
+            'Similar Content Found': '• Some similarities with existing content detected\n• Review and verify sources before submission\n• Consider paraphrasing or proper citation if needed',
+            'Mixed Content': '• Content may contain both human and AI-generated elements\n• Additional verification recommended for academic use\n• Consider reviewing for consistency and authenticity',
+            'Plagiarism Detected': '• Strong indicators of copied or heavily borrowed content\n• Not recommended for submission without proper attribution\n• Consider rewriting with original content and proper citations',
+            'AI Generated': '• Clear indicators of AI-generated content detected\n• Content likely produced by artificial intelligence\n• Exercise caution in contexts requiring human-authored content'
+        };
+        
+        const key = Object.keys(recommendations).find(k => result.includes(k)) || 'Mixed Content';
+        return recommendations[key].split('\n').join('<br>');
+    }
+
+async function loadTextHistory() {
+    try {
+        const response = await fetch(ENDPOINTS.ADMIN_TEXT_HISTORY);  // e.g., '/api/admin/text-history/'
+        const data = await response.json();
+        
+        if (data.success && Array.isArray(data.history)) {
+            textAnalysisHistory = data.history;  // Assuming global var
+            updateTextHistoryTable();
+        } else {
+            console.warn('No text history data received:', data);
+            // Optionally show empty state
+            if (document.getElementById('text-history-tbody')) {
+                document.getElementById('text-history-tbody').innerHTML = `
+                    <tr><td colspan="6" class="p-8 text-center text-muted-foreground">No history available.</td></tr>
+                `;
+            }
+        }
+    } catch (error) {
+        console.error('Error loading text history:', error);
+        showAlert('Failed to load text history. Please refresh.', 'error');
+    }
+}
+
+function getResultColor(result) {
+    const lowerResult = result.toLowerCase();
+    if (lowerResult.includes('original') || lowerResult.includes('authentic')) return 'bg-green-500 text-white';
+    if (lowerResult.includes('ai') || lowerResult.includes('forged')) return 'bg-red-500 text-white';
+    return 'bg-yellow-500 text-white';  // Default warning
+}
+
+// Ensure timeAgo is defined (add if missing)
+function timeAgo(date) {
+    const now = new Date();
+    const diff = now - date;
+    const seconds = Math.floor(diff / 1000);
+    const minutes = Math.floor(seconds / 60);
+    const hours = Math.floor(minutes / 60);
+    const days = Math.floor(hours / 24);
+    
+    if (days > 0) return `${days}d ago`;
+    if (hours > 0) return `${hours}h ago`;
+    if (minutes > 0) return `${minutes}m ago`;
+    return 'Just now';
+}
+
+    function updateTextHistoryTable() {
+        const tbody = document.getElementById('text-history-tbody');
+        const historyCount = document.getElementById('text-history-count');
+        
+        historyCount.textContent = `${textAnalysisHistory.length} items`;
+        
+        if (textAnalysisHistory.length === 0) {
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="6" class="p-8 text-center text-muted-foreground font-medium">
+                        No analysis history yet. Enter some text and run an analysis to get started!
+                    </td>
+                </tr>
+            `;
+            return;
+        }
+        
+        tbody.innerHTML = textAnalysisHistory.map(item => `
+            <tr class="hover:bg-muted/50 transition-colors">
+                <td class="p-4">
+                    <div class="max-w-xs">
+                        <div class="font-medium text-foreground truncate" title="${item.fullText}">${item.textPreview}</div>
+                        <div class="text-sm text-muted-foreground">${item.wordCount} words • ${item.id}</div>
+                    </div>
+                </td>
+                <td class="p-4">
+                    <div class="flex items-center gap-2">
+                        <div class="h-6 w-6 rounded-full bg-gradient-to-br from-indigo-500 to-purple-500 text-[10px] text-white grid place-content-center font-bold">
+                            ${item.user ? item.user.substring(0, 2).toUpperCase() : '??'}
+                        </div>
+                        <span class="text-sm font-medium text-foreground">${item.user}</span>
+                    </div>
+                </td>
+                <td class="p-4 text-muted-foreground font-medium">${item.analysisType}</td>
+                <td class="p-4">
+                    <span class="inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-xs font-semibold ${getTextResultColor(item.result)}">
+                        ${item.result}
+                    </span>
+                </td>
+                <td class="p-4 font-semibold text-foreground">${item.confidence}%</td>
+                <td class="p-4 text-muted-foreground font-medium">${timeAgo(item.date)}</td>
+                <td class="p-4 text-right">
+                    <div class="inline-flex items-center gap-2">
+                        <button onclick="downloadTextReport('${item.id}')" class="px-3 py-2 rounded-xl bg-gradient-primary text-primary-foreground hover:opacity-90 text-xs font-semibold transition-all">
+                            Download
+                        </button>
+                    </div>
+                </td>
+            </tr>
+        `).join('');
+    }
+
+    function downloadTextReport(analysisId) {
+        const analysis = textAnalysisHistory.find(item => item.id == analysisId);
+        if (!analysis) return;
+        
+        const report = `
+TEXT FORENSIC ANALYSIS REPORT
+=============================
+
+Analysis ID: ${analysis.id}
+Analysis Type: ${analysis.analysisType}
+Result: ${analysis.result}
+Confidence: ${analysis.confidence}%
+Word Count: ${analysis.wordCount} words
+Date: ${analysis.date.toLocaleString()}
+
+TEXT PREVIEW:
+${analysis.textPreview}
+
+This report was generated by TrueVision Text Analysis System.
+        `.trim();
+        
+        const blob = new Blob([report], { type: 'text/plain' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `TextForensicReport_${analysis.id}.txt`;
+        a.click();
+        URL.revokeObjectURL(url);
+    }
+
+    // Document Forensics Functions (Enhanced with real backend integration)
+    function handleDocumentUpload(fileList) {
+        const file = fileList[0];
+        if (!file) return;
+
+        const allowedTypes = [
+            'application/pdf',
+            'application/msword',
+            'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+            'text/plain',
+            'application/rtf'
+        ];
+        
+        if (!allowedTypes.includes(file.type)) {
+            alert('Please upload a valid document file (PDF, DOC, DOCX, TXT, RTF)');
+            return;
+        }
+
+        documentFile = file;
+        
+        const modal = document.getElementById('document-upload-progress-modal');
+        modal.classList.remove('hidden');
+        
+        setTimeout(() => {
+            modal.classList.add('hidden');
+            displayDocumentPreview(file);
+        }, 2000);
+    }
+
+    function displayDocumentPreview(file) {
+        const analysisSection = document.getElementById('document-analysis-section');
+        const fileName = document.getElementById('document-name');
+        const fileDetails = document.getElementById('document-details');
+        const documentInfo = document.getElementById('document-info');
+        
+        fileName.textContent = file.name;
+        fileDetails.innerHTML = `${formatBytes(file.size)} • ${file.type.includes('pdf') ? 'PDF Document' : 
+                              file.type.includes('word') ? 'Word Document' : 
+                              file.type.includes('text') ? 'Text Document' : 
+                              'Document'}`;
+        
+        documentInfo.innerHTML = `
+            <div class="space-y-2 text-sm">
+                <div class="flex justify-between">
+                    <span class="text-muted-foreground">File Size:</span>
+                    <span class="font-medium text-foreground">${formatBytes(file.size)}</span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="text-muted-foreground">File Type:</span>
+                    <span class="font-medium text-foreground">${file.type}</span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="text-muted-foreground">Last Modified:</span>
+                    <span class="font-medium text-foreground">${new Date(file.lastModified).toLocaleDateString()}</span>
+                </div>
+            </div>
+        `;
+        
+        analysisSection.classList.remove('hidden');
+        document.getElementById('document-plagiarism-btn').disabled = false;
+        document.getElementById('document-ai-detection-btn').disabled = false;
+    }
+
+    function removeDocument() {
+        documentFile = null;
+        document.getElementById('document-analysis-section').classList.add('hidden');
+        document.getElementById('document-plagiarism-btn').disabled = true;
+        document.getElementById('document-ai-detection-btn').disabled = true;
+        document.getElementById('document-analysis-results-section').classList.add('hidden');
+    }
+
+    async function startDocumentAnalysis(analysisType) {
+        if (!documentFile) {
+            alert('Please upload a document first');
+            return;
+        }
+        
+        const typeText = document.getElementById('document-analysis-type-text');
+        typeText.textContent = analysisType === 'forgery' ? 
+            'Scanning for document forgery indicators...' : 
+            analysisType === 'plagiarism' ?
+            'Scanning for plagiarism and content similarity...' :
+            'Detecting AI-generated content patterns...';
+        
+        const modal = document.getElementById('document-scanning-modal');
+        modal.classList.remove('hidden');
+        
+        try {
+            const formData = new FormData();
+            formData.append('document', documentFile);
+            formData.append('analysisType', analysisType);
+            
+            const response = await fetch('/api/document/analyze/', {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRFToken': getCSRFToken()
+                }
+            });
+
+            const data = await response.json();
+            modal.classList.add('hidden');
+
+            if (data.success) {
+                showDocumentAnalysisResults(data, analysisType, documentFile.name);
+                await loadDocumentAnalysisHistory();
+                updateDashboardStats();
+            } else {
+                alert('Document analysis failed: ' + (data.message || 'Unknown error'));
+            }
+
+        } catch (error) {
+            modal.classList.add('hidden');
+            console.error('Document analysis error:', error);
+            alert('Error during document analysis');
+        }
+    }
+
+    function showDocumentAnalysisResults(data, analysisType, fileName) {
+        const resultsSection = document.getElementById('document-analysis-results-section');
+        const resultsContent = document.getElementById('document-analysis-report-content');
+        
+        const analysisId = data.id;
+        const wordCount = data.word_count || 0;
+        
+        let reportHTML = `
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="space-y-4">
+                    <div class="p-4 rounded-xl bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-950/30 dark:to-indigo-950/30 border border-blue-200 dark:border-blue-800">
+                        <h4 class="font-semibold text-blue-900 dark:text-blue-100 mb-2">Document Analysis Results</h4>
+                        <div class="space-y-2">
+                            <div class="flex justify-between">
+                                <span class="text-blue-700 dark:text-blue-300">Document:</span>
+                                <span class="font-medium text-blue-900 dark:text-blue-100">${fileName}</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-blue-700 dark:text-blue-300">Analysis Type:</span>
+                                <span class="font-medium text-blue-900 dark:text-blue-100">${analysisType === 'forgery' ? 'Document Forgery Detection' : analysisType === 'plagiarism' ? 'Plagiarism Detection' : 'AI Detection'}</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-muted-foreground">Result:</span>
+                                <span class="font-bold ${getTextResultColor(data.result)}">${data.result}</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-muted-foreground">Confidence:</span>
+                                <span class="font-bold text-blue-900 dark:text-blue-100">${data.confidence}%</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-muted-foreground">Word Count:</span>
+                                <span class="font-medium text-blue-900 dark:text-blue-100">${wordCount} words</span>
+                            </div>
+        `;
+        
+        if (analysisType === 'forgery') {
+            reportHTML += `
+                            <div class="flex justify-between">
+                                <span class="text-muted-foreground">Risk Level:</span>
+                                <span class="font-bold">${data.risk_level}</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-muted-foreground">Authenticity Score:</span>
+                                <span class="font-medium text-blue-900 dark:text-blue-100">${data.authenticity_score}%</span>
+                            </div>
+            `;
+        } else if (analysisType === 'plagiarism') {
+            reportHTML += `
+                            <div class="flex justify-between">
+                                <span class="text-muted-foreground">Plagiarism Level:</span>
+                                <span class="font-medium text-blue-900 dark:text-blue-100">${data.plagiarism_level}</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-muted-foreground">Originality Score:</span>
+                                <span class="font-medium text-blue-900 dark:text-blue-100">${data.originality_score}%</span>
+                            </div>
+            `;
+        }
+        
+        reportHTML += `
+                        </div>
+                    </div>
+                    
+                    <div class="p-4 rounded-xl bg-muted">
+                        <h4 class="font-semibold text-foreground mb-2">Analysis Details</h4>
+                        <div class="text-sm text-muted-foreground space-y-2">
+                            ${data.reasoning ? `<p><strong>Reasoning:</strong> ${data.reasoning}</p>` : ''}
+        `;
+        
+        if (analysisType === 'forgery' && data.forgery_indicators) {
+            reportHTML += `
+                            <div><strong>Forgery Indicators Found:</strong> ${data.forgery_indicators.length}</div>
+                            <ul class="list-disc list-inside space-y-1">
+        `;
+            data.forgery_indicators.slice(0, 3).forEach(indicator => {
+                reportHTML += `<li>${indicator.indicator || indicator}</li>`;
+            });
+            reportHTML += `</ul>`;
+        }
+        
+        if (analysisType === 'plagiarism' && data.suspicious_sections) {
+            reportHTML += `
+                            <div><strong>Suspicious Sections Found:</strong> ${data.suspicious_sections.length}</div>
+            `;
+        }
+        
+        reportHTML += `
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="space-y-4">
+                    <div class="p-4 rounded-xl border border-border">
+                        <h4 class="font-semibold text-foreground mb-3">Text Preview</h4>
+                        <div class="text-sm text-muted-foreground max-h-48 overflow-y-auto">
+                            ${data.textPreview || 'Text preview not available'}
+                        </div>
+                    </div>
+        `;
+        
+        if (analysisType === 'forgery' && data.recommendations) {
+            reportHTML += `
+                    <div class="p-4 rounded-xl bg-muted">
+                        <h4 class="font-semibold text-foreground mb-2">Recommendations</h4>
+                        <ul class="text-sm text-muted-foreground space-y-1">
+            `;
+            data.recommendations.forEach(rec => {
+                reportHTML += `<li>• ${rec}</li>`;
+            });
+            reportHTML += `</ul></div>`;
+        }
+        
+        if (analysisType === 'forgery' && data.red_flags) {
+            reportHTML += `
+                    <div class="p-4 rounded-xl bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-800">
+                        <h4 class="font-semibold text-red-900 dark:text-red-100 mb-2">Red Flags</h4>
+                        <ul class="text-sm text-red-700 dark:text-red-300 space-y-1">
+            `;
+            data.red_flags.forEach(flag => {
+                reportHTML += `<li>⚠ ${flag}</li>`;
+            });
+            reportHTML += `</ul></div>`;
+        }
+        
+        reportHTML += `
+                </div>
+            </div>
+        `;
+        
+        resultsContent.innerHTML = reportHTML;
+        resultsSection.classList.remove('hidden');
+        resultsSection.scrollIntoView({ behavior: 'smooth' });
+    }
+
+async function loadDocumentHistory() {
+    try {
+        const response = await fetch('/api/admin/document/history/');
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        const data = await response.json();
+        if (data.success && Array.isArray(data.history)) {  // Use data.history, not data.items
+            documentHistory = data.history.map(item => ({
+                id: item.id,
+                file_name: item.file_name,
+                file_size: item.file_size,
+                file_type: item.file_type,
+                result: item.result,
+                confidence: item.confidence,
+                date: new Date(item.date).toLocaleString(),
+                scan_id: item.scan_id,
+                user: item.user,
+                word_count: item.word_count || 0
+            }));
+            updateDocumentHistoryTable();
+            console.log(`Loaded ${documentHistory.length} document histories`);  // Debug
+        } else {
+            throw new Error(data.message || 'No data');
+        }
+    } catch (error) {
+        console.error('Error loading document history:', error);
+        showAlert('Failed to load document history: ' + error.message, 'error');
+        updateDocumentHistoryTable([]);  // Show empty state
+    }
+}
+
+// Update Document History Table (Similar Structure)
+function updateDocumentHistoryTable(items = documentHistory) {
+    const tbody = document.getElementById('document-history-tbody');
+    if (!tbody) {
+        console.error('Document history tbody not found');
+        return;
+    }
+    
+    if (items.length === 0) {
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="7" class="p-8 text-center text-muted-foreground">
+                    <div class="flex flex-col items-center gap-2">
+                        <svg class="h-12 w-12 text-muted-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        </svg>
+                        <p class="text-sm">No document analysis history yet.</p>
+                    </div>
+                </td>
+            </tr>
+        `;
+        return;
+    }
+    
+    tbody.innerHTML = items.map(item => {
+        // Determine badge color
+        const resultLower = item.result.toLowerCase();
+        let badgeClass = 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300';
+        
+        if (resultLower.includes('authentic') || resultLower.includes('original')) {
+            badgeClass = 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400';
+        } else if (resultLower.includes('ai') || resultLower.includes('generated')) {
+            badgeClass = 'bg-amber-100 text-amber-700 dark:bg-amber-500/20 dark:text-amber-400';
+        } else if (resultLower.includes('modified') || resultLower.includes('forgery') || resultLower.includes('plagiarism')) {
+            badgeClass = 'bg-red-100 text-red-700 dark:bg-red-500/20 dark:text-red-400';
+        }
+
+        return `
+        <tr class="border-b border-border/20 hover:bg-muted/50 transition-colors">
+            <td class="p-4">
+                <div class="flex items-center gap-3">
+                    ${getFileIcon(item.file_type || 'document')}
+                    <div>
+                        <div class="font-medium text-foreground">${item.file_name}</div>
+                        <div class="text-xs text-muted-foreground capitalize">${item.file_type || 'Unknown'} • ${(item.file_size / 1024).toFixed(1)} KB • ${item.word_count || 0} words</div>
+                    </div>
+                </div>
+            </td>
+            <td class="p-4">
+                <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold ${badgeClass}">
+                    ${item.result}
+                </span>
+            </td>
+            <td class="p-4 hidden sm:table-cell">
+                <div class="text-sm font-medium text-foreground">${item.confidence ? item.confidence.toFixed(1) : '0.0'}%</div>
+                <div class="w-full bg-muted rounded-full h-1.5 mt-1">
+                    <div class="bg-primary h-1.5 rounded-full" style="width: ${item.confidence || 0}%"></div>
+                </div>
+            </td>
+            <td class="p-4 hidden md:table-cell">
+                <div class="flex items-center gap-2">
+                    <div class="h-6 w-6 rounded-full bg-gradient-to-br from-indigo-500 to-purple-500 text-[10px] text-white grid place-content-center font-bold">
+                        ${item.user ? item.user.substring(0, 2).toUpperCase() : '??'}
+                    </div>
+                    <span class="text-sm font-medium text-foreground">${item.user || 'Unknown'}</span>
+                </div>
+            </td>
+            <td class="p-4 text-sm text-muted-foreground hidden lg:table-cell font-mono text-xs">${item.scan_id || 'N/A'}</td>
+            <td class="p-4 text-sm text-muted-foreground hidden lg:table-cell">${item.date}</td>
+            <td class="p-4 text-right">
+                <div class="inline-flex items-center gap-2">
+                    <button onclick="downloadDocumentReport('${item.id}')" class="px-3 py-2 rounded-xl bg-gradient-primary text-primary-foreground hover:opacity-90 text-xs font-semibold transition-all">
+                        Download
+                    </button>
+                    <button onclick="viewDetails('document', ${item.id})" class="p-2 hover:bg-muted rounded-lg text-muted-foreground hover:text-foreground transition-colors" title="View Report">
+
+                    </button>
+                </div>
+            </td>
+        </tr>
+    `}).join('');
+}
+    function downloadDocumentReport(analysisId) {
+        const analysis = documentAnalysisHistory.find(item => item.id == analysisId);
+        if (!analysis) return;
+        
+        const report = `
+DOCUMENT FORENSIC ANALYSIS REPORT
+==================================
+
+Analysis ID: ${analysis.id}
+File Name: ${analysis.file_name}
+Analysis Type: ${analysis.analysis_type}
+Result: ${analysis.result}
+Confidence: ${analysis.confidence}%
+Word Count: ${analysis.word_count} words
+Date: ${analysis.date.toLocaleString()}
+${analysis.risk_level ? `Risk Level: ${analysis.risk_level}` : ''}
+${analysis.authenticity_score ? `Authenticity Score: ${analysis.authenticity_score}%` : ''}
+
+This report was generated by TrueVision Document Analysis System.
+        `.trim();
+        
+        const blob = new Blob([report], { type: 'text/plain' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `DocumentForensicReport_${analysis.id}.txt`;
+        a.click();
+        URL.revokeObjectURL(url);
+    }
+
+    // ==================== INTEGRITY CHECK FUNCTIONS ====================
+    
+function handleIntegrityUpload(file) {
+    if (!file) return;
+    
+    integrityFile = file;
+    
+    // Update file info display
+    document.getElementById('integrity-file-name').textContent = file.name;
+    document.getElementById('integrity-file-details').innerHTML = `
+        <div class="text-sm text-muted-foreground">
+            ${formatBytes(file.size)} • ${file.type || 'Unknown type'}
+        </div>
+    `;
+    
+    document.getElementById('integrity-file-info').innerHTML = `
+        <div class="grid grid-cols-2 gap-3 text-sm">
+            <div>
+                <span class="text-muted-foreground">Size:</span>
+                <span class="font-medium text-foreground ml-2">${formatBytes(file.size)}</span>
+            </div>
+            <div>
+                <span class="text-muted-foreground">Type:</span>
+                <span class="font-medium text-foreground ml-2">${file.type || 'Unknown'}</span>
+            </div>
+            <div>
+                <span class="text-muted-foreground">Last Modified:</span>
+                <span class="font-medium text-foreground ml-2">${new Date(file.lastModified).toLocaleDateString()}</span>
+            </div>
+        </div>
+    `;
+    
+    // Show analysis section
+    document.getElementById('integrity-analysis-section').classList.remove('hidden');
+    document.getElementById('integrity-analysis-section').scrollIntoView({ behavior: 'smooth' });
+}
+
+    function removeIntegrityFile() {
+        integrityFile = null;
+        document.getElementById('integrity-analysis-section').classList.add('hidden');
+        document.getElementById('integrity-results-section').classList.add('hidden');
+        document.getElementById('integrity-file-input').value = '';
+    }
+    
+    async function startIntegrityCheck(verificationType) {
+        if (!integrityFile) {
+            alert('Please select a file first');
+            return;
+        }
+        
+        // Show scanning modal
+        const modal = document.getElementById('integrity-scanning-modal');
+        const typeText = document.getElementById('integrity-type-text');
+        
+        const typeNames = {
+            'hash': 'Hash Verification',
+            'checksum': 'Checksum Verification',
+            'signature': 'Digital Signature Verification'
+        };
+        
+        typeText.textContent = `Running ${typeNames[verificationType]}...`;
+        modal.classList.remove('hidden');
+        
+        try {
+            const formData = new FormData();
+            formData.append('file', integrityFile);
+            formData.append('verificationType', verificationType);
+            
+            const response = await fetch(ENDPOINTS.INTEGRITY_CHECK, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRFToken': getCSRFToken()
+                }
+            });
+            
+            const data = await response.json();
+            
+            // Hide modal
+            modal.classList.add('hidden');
+            
+            if (data.success) {
+                displayIntegrityResults(data, verificationType);
+                await loadIntegrityHistory();
+            } else {
+                alert(data.message || 'Verification failed. Please try again.');
+            }
+        } catch (error) {
+            modal.classList.add('hidden');
+            console.error('Integrity check error:', error);
+            alert('An error occurred during verification. Please try again.');
+        }
+    }
+    
+function displayIntegrityResults(data, verificationType) {  // Add verificationType param if not already
+    if (!data.success) {
+        showAlert('Integrity check failed: ' + (data.message || 'Unknown error'), 'error');
+        return;
+    }
+
+    // Extract values with fallbacks (aligned with your backend keys from views.py)
+    const vType = data.verification_type || 'hash';
+    const typeNames = { hash: 'Hash Verification', checksum: 'Checksum Verification', signature: 'Digital Signature Verification' };
+    const result = data.result || 'N/A';
+    const confidence = data.confidence || 0;
+    const integrityScore = data.integrity_score || 'N/A';
+    const date = new Date(data.date || Date.now()).toLocaleString();
+    const fileName = data.file_name || 'Unknown';
+    const hashType = data.hash_type || 'SHA-256';
+    const status = data.is_valid ? 'Authentic' : 'Modified';
+    const anomalies = data.anomalies || [];
+    const recommendations = data.recommendations || [];
+
+    // Color class for result badge (use your CSS classes)
+    const resultColor = getIntegrityResultColor(result);  // Ensure this function exists (see Step 4)
+
+    // Render HTML template
+    const resultHTML = `
+        <div class="space-y-4">
+            <div class="flex justify-between items-center">
+                <h3 class="text-lg font-semibold text-foreground">Integrity Check Results</h3>
+                <span class="inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-xs font-semibold ${resultColor}">
+                    ${status}
+                </span>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="glass-effect p-4 rounded-xl">
+                    <h4 class="font-medium text-muted-foreground mb-2">File Details</h4>
+                    <p><strong>Name:</strong> ${fileName}</p>
+                    <p><strong>Type:</strong> ${data.file_type || 'N/A'}</p>
+                    <p><strong>Size:</strong> ${(data.file_size / 1024).toFixed(2)} KB</p>
+                    <p><strong>Verification Type:</strong> ${typeNames[vType] || vType}</p>
+                </div>
+                <div class="glass-effect p-4 rounded-xl">
+                    <h4 class="font-medium text-muted-foreground mb-2">Security Metrics</h4>
+                    <p><strong>Result:</strong> <span class="${resultColor}">${result}</span></p>
+                    <p><strong>Confidence:</strong> ${confidence}%</p>
+                    <p><strong>Integrity Score:</strong> ${integrityScore}</p>
+                    <p><strong>Risk Level:</strong> ${data.risk_level || 'N/A'}</p>
+                    <p><strong>Date:</strong> ${date}</p>
+                </div>
+            </div>
+            
+            <!-- Digital Signature Section -->
+            <!-- ${(() => {
+                const digitalSigAnomalies = anomalies.filter(a => a.type && (a.type.includes('Digital Signature') || a.type.includes('No Digital Signature')));
+                if (digitalSigAnomalies.length > 0) {
+                    const hasSig = digitalSigAnomalies.some(a => a.type.includes('Digital Signature Detected'));
+                    return `
+                        <div class="glass-effect p-4 rounded-xl border-2 ${hasSig ? 'border-emerald-500' : 'border-amber-500'}">
+                            <h4 class="font-medium mb-2 flex items-center gap-2">
+                                <svg class="h-5 w-5 ${hasSig ? 'text-emerald-600' : 'text-amber-600'}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="${hasSig ? 'M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z' : 'M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z'}"/>
+                                </svg>
+                                Digital Signature Status
+                            </h4>
+                            ${digitalSigAnomalies.map(sig => `
+                                <div class="mt-2">
+                                    <p class="font-semibold ${hasSig ? 'text-emerald-700' : 'text-amber-700'}">${sig.description}</p>
+                                    ${sig.evidence ? `<p class="text-sm text-muted-foreground mt-1"><strong>Evidence:</strong> ${sig.evidence}</p>` : ''}
+                                    <p class="text-sm text-muted-foreground mt-1"><em>${sig.recommendation}</em></p>
+                                </div>
+                            `).join('')}
+                        </div>
+                    `;
+                }
+                return '';
+            })()}
+             -->
+            <!-- All Hashes Section -->
+            ${data.all_hashes ? `
+                <div class="glass-effect p-4 rounded-xl">
+                    <h4 class="font-medium text-muted-foreground mb-2">Cryptographic Hashes</h4>
+                    <div class="space-y-2 text-sm font-mono">
+                        ${data.all_hashes.md5 ? `<p><strong class="font-sans">MD5:</strong> <span class="text-primary">${data.all_hashes.md5}</span></p>` : ''}
+                        ${data.all_hashes.sha1 ? `<p><strong class="font-sans">SHA-1:</strong> <span class="text-primary">${data.all_hashes.sha1}</span></p>` : ''}
+                        ${data.all_hashes.sha256 ? `<p><strong class="font-sans">SHA-256:</strong> <span class="text-primary">${data.all_hashes.sha256}</span></p>` : ''}
+                        ${data.all_hashes.sha512 ? `<p><strong class="font-sans">SHA-512:</strong> <span class="text-primary break-all">${data.all_hashes.sha512}</span></p>` : ''}
+                        ${data.all_hashes.blake2b ? `<p><strong class="font-sans">BLAKE2b:</strong> <span class="text-primary break-all">${data.all_hashes.blake2b}</span></p>` : ''}
+                        ${data.all_hashes.blake2s ? `<p><strong class="font-sans">BLAKE2s:</strong> <span class="text-primary">${data.all_hashes.blake2s}</span></p>` : ''}
+                    </div>
+                </div>
+            ` : ''}
+            
+            <!-- Checksums Section -->
+            ${data.crc_checksums ? `
+                <div class="glass-effect p-4 rounded-xl">
+                    <h4 class="font-medium text-muted-foreground mb-2">Checksums</h4>
+                    <div class="space-y-2 text-sm font-mono">
+                        ${data.crc_checksums.crc32 ? `<p><strong class="font-sans">CRC32:</strong> <span class="text-primary">${data.crc_checksums.crc32}</span></p>` : ''}
+                        ${data.crc_checksums.adler32 ? `<p><strong class="font-sans">Adler32:</strong> <span class="text-primary">${data.crc_checksums.adler32}</span></p>` : ''}
+                    </div>
+                </div>
+            ` : ''}
+            
+            ${anomalies.length > 0 ? `
+                <div class="glass-effect p-4 rounded-xl">
+                    <h4 class="font-medium text-muted-foreground mb-2">Detected Findings (${anomalies.length})</h4>
+                    <ul class="space-y-3">
+                        ${anomalies.map(anomaly => `
+                            <li class="flex items-start gap-2 text-sm">
+                                <span class="w-2 h-2 mt-2 rounded-full ${anomaly.severity === 'high' ? 'bg-red-500' : anomaly.severity === 'medium' ? 'bg-amber-500' : 'bg-blue-500'} flex-shrink-0"></span>
+                                <div>
+                                    <strong>${anomaly.type} (${anomaly.severity}):</strong> ${anomaly.description}
+                                    ${anomaly.evidence ? `<br><span class="text-muted-foreground">Evidence: ${anomaly.evidence}</span>` : ''}
+                                    <br><em class="text-muted-foreground">Recommendation: ${anomaly.recommendation}</em>
+                                </div>
+                            </li>
+                        `).join('')}
+                    </ul>
+                </div>
+            ` : ''}
+            ${recommendations.length > 0 ? `
+                <div class="glass-effect p-4 rounded-xl">
+                    <h4 class="font-medium text-muted-foreground mb-2">Recommendations</h4>
+                    <ul class="list-disc pl-5 space-y-1 text-sm">
+                        ${recommendations.map(rec => `<li>${rec}</li>`).join('')}
+                    </ul>
+                </div>
+            ` : ''}
+            <div class="flex justify-end">
+                <button onclick="downloadIntegrityReport('${data.id}')" class="px-4 py-2 rounded-xl bg-gradient-primary text-primary-foreground hover:opacity-90 font-semibold transition-all">
+                    Download Full Report
+                </button>
+            </div>
+        </div>
+    `;
+
+    // Insert into results container (now guaranteed to exist)
+    const resultsContainer = document.getElementById('integrity-results-container');
+    if (resultsContainer) {
+        resultsContainer.innerHTML = resultHTML;
+        document.getElementById('integrity-results-section').classList.remove('hidden');  // Show section
+        resultsContainer.scrollIntoView({ behavior: 'smooth' });
+    } else {
+        console.error('Results container still not found - check HTML');
+        showAlert('Results ready but display failed. Check console.', 'error');
+    }
+
+    // Update global history cache (if exists)
+    if (typeof integrityCheckHistory !== 'undefined' && !integrityCheckHistory.find(h => h.id === data.id)) {
+        integrityCheckHistory.unshift({
+            id: data.id,
+            file_name: fileName,
+            verification_type: verificationType,
+            result: result,
+            confidence: confidence,
+            integrity_score: integrityScore,
+            date: new Date(data.date)
+        });
+        if (typeof updateIntegrityHistoryTable === 'function') {
+            updateIntegrityHistoryTable();  // Refresh table
+        }
+    }
+
+    showAlert('Integrity check completed successfully!', 'success');
+}
+// Ensure getIntegrityResultColor is defined (add if missing, from history snippet)
+function getIntegrityResultColor(result) {
+    switch (result.toLowerCase()) {
+        case 'authentic': return 'bg-green-500 text-white';  // Or use your CSS classes like 'badge-success'
+        case 'modified': return 'bg-red-500 text-white';     // 'badge-danger'
+        default: return 'bg-yellow-500 text-white';          // 'badge-warning'
+    }
+}
+    async function loadIntegrityHistory() {
+    try {
+        const response = await fetch(ENDPOINTS.ADMIN_INTEGRITY_HISTORY);
+        const data = await response.json();
+        
+        if (data.success && Array.isArray(data.history)) {  // <-- Changed to 'history'
+            integrityCheckHistory = data.history.map(item => ({  // <-- Changed to data.history
+                id: item.id,
+                user: item.user,
+                file_name: item.file_name,
+                verification_type: item.verification_type || item.hash_type,
+                result: item.result,
+                confidence: item.confidence,
+                date: new Date(item.date || item.created_at),
+                integrity_score: item.integrity_score
+            }));
+            
+            updateIntegrityHistoryTable();
+        } else {
+            console.warn('No history data received:', data);  // Add logging for debugging
+        }
+    } catch (error) {
+        console.error('Error loading integrity check history:', error);
+    }
+}
+                
+         
+    
+    function updateIntegrityHistoryTable() {
+        const tbody = document.getElementById('integrity-history-tbody');
+        const historyCount = document.getElementById('integrity-history-count');
+        
+        historyCount.textContent = `${integrityCheckHistory.length} items`;
+        
+        if (integrityCheckHistory.length === 0) {
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="6" class="p-8 text-center text-muted-foreground font-medium">
+                        No verification history yet. Upload a file to get started!
+                    </td>
+                </tr>
+            `;
+            return;
+        }
+        
+        tbody.innerHTML = integrityCheckHistory.map(item => `
+            <tr class="hover:bg-muted/50 transition-colors">
+                <td class="p-4">
+                    <div class="max-w-xs">
+                        <div class="font-medium text-foreground truncate" title="${item.file_name}">${item.file_name}</div>
+                        <div class="text-sm text-muted-foreground">ID: ${item.id}</div>
+                    </div>
+                </td>
+                <td class="p-4">
+                    <div class="flex items-center gap-2">
+                        <div class="h-6 w-6 rounded-full bg-gradient-to-br from-indigo-500 to-purple-500 text-[10px] text-white grid place-content-center font-bold">
+                            ${item.user ? item.user.substring(0, 2).toUpperCase() : '??'}
+                        </div>
+                        <span class="text-sm font-medium text-foreground">${item.user || 'Unknown'}</span>
+                    </div>
+                </td>
+                <td class="p-4 text-muted-foreground font-medium">${item.verification_type}</td>
+                <td class="p-4">
+                    <span class="inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-xs font-semibold ${getIntegrityResultColor(item.result)}">
+                        ${item.result}
+                    </span>
+                </td>
+                <td class="p-4 font-semibold text-foreground">${item.confidence}%</td>
+                <td class="p-4 text-muted-foreground font-medium">${timeAgo(item.date)}</td>
+                <td class="p-4 text-right">
+                    <div class="inline-flex items-center gap-2">
+                        <button onclick="downloadIntegrityReport('${item.id}')" class="px-3 py-2 rounded-xl bg-gradient-primary text-primary-foreground hover:opacity-90 text-xs font-semibold transition-all">
+                            Download
+                        </button>
+                    </div>
+                </td>
+            </tr>
+        `).join('');
+    }
+    
+    function downloadIntegrityReport(checkId) {
+        const check = integrityCheckHistory.find(item => item.id == checkId);
+        if (!check) return;
+        
+        const report = `
+FILE INTEGRITY VERIFICATION REPORT
+===================================
+
+Verification ID: ${check.id}
+File Name: ${check.file_name}
+Verification Type: ${check.verification_type}
+Result: ${check.result}
+Confidence: ${check.confidence}%
+Integrity Score: ${check.integrity_score || 'N/A'}
+Date: ${check.date.toLocaleString()}
+
+This report was generated by TrueVision Integrity Verification System.
+        `.trim();
+        
+        const blob = new Blob([report], { type: 'text/plain' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `IntegrityReport_${check.id}.txt`;
+        a.click();
+        URL.revokeObjectURL(url);
+    }
+
+    // Utility function to get CSRF token
+    function getCSRFToken() {
+        const name = 'csrftoken';
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    // User Management Functions
+    async function loadUsers() {
+        try {
+            const tbody = document.getElementById('users-tbody');
+            if (tbody) {
+                tbody.innerHTML = `<tr><td colspan="5" class="p-8 text-center text-muted-foreground"><div class="loading-skeleton h-4 w-32 mx-auto"></div></td></tr>`;
+            }
+            
+            const response = await fetch('/api/users/');
+            const data = await response.json();
+            
+            if (data.success) {
+                if (data.users.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="5" class="p-8 text-center text-muted-foreground">No users found.</td></tr>`;
+                    return;
+                }
+                
+                tbody.innerHTML = data.users.map(user => `
+                    <tr class="hover:bg-muted/50 transition-colors">
+                        <td class="p-4">
+                            <div class="flex items-center gap-3">
+                                <div class="h-8 w-8 rounded-full bg-gradient-to-br from-purple-500 to-indigo-500 text-white grid place-content-center font-bold text-xs">
+                                    ${user.username.substring(0, 2).toUpperCase()}
+                                </div>
+                                <div>
+                                    <div class="font-medium text-foreground">${user.username}</div>
+                                    <div class="text-xs text-muted-foreground">${user.email}</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="p-4">
+                            <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium ${user.is_staff ? 'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-300' : 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-300'}">
+                                ${user.is_staff ? 'Admin' : 'User'}
+                            </span>
+                        </td>
+                        <td class="p-4">
+                            <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium ${user.is_active ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-300' : 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300'}">
+                                ${user.is_active ? 'Active' : 'Inactive'}
+                            </span>
+                        </td>
+                        <td class="p-4 text-muted-foreground text-sm">${user.date_joined}</td>
+                        <td class="p-4 text-right">
+                            
+                        </td>
+                    </tr>
+                `).join('');
+            } else {
+                console.error('Failed to load users:', data.message);
+                showAlert('Failed to load users', 'error');
+            }
+        } catch (error) {
+            console.error('Error loading users:', error);
+            showAlert('Error loading users', 'error');
+        }
+    }
+
+    // Event listeners
+    document.addEventListener('DOMContentLoaded', function() {
+        initTheme();
+        initFiles();
+
+        // Theme toggle
+        document.getElementById('theme-toggle').addEventListener('click', toggleTheme);
+
+        // Sidebar toggle
+        document.getElementById('sidebar-toggle').addEventListener('click', function() {
+            sidebarOpen = !sidebarOpen;
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('-translate-x-full', !sidebarOpen);
+            sidebar.classList.toggle('translate-x-0', sidebarOpen);
+        });
+
+        // Image forensics event listeners
+        const imageFileInput = document.getElementById('image-file-input');
+        const imageUploadArea = document.getElementById('image-upload-area');
+        const imageSelectBtn = document.getElementById('image-select-btn');
+        
+        if (imageFileInput) {
+            imageFileInput.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    handleImageUpload(file);
+                }
+            });
+        }
+        
+        if (imageUploadArea) {
+            imageUploadArea.addEventListener('click', function() {
+                imageFileInput.click();
+            });
+            
+            imageUploadArea.addEventListener('dragover', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                this.classList.add('border-primary', 'bg-primary/5');
+            });
+            
+            imageUploadArea.addEventListener('dragleave', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                this.classList.remove('border-primary', 'bg-primary/5');
+            });
+            
+            imageUploadArea.addEventListener('drop', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                this.classList.remove('border-primary', 'bg-primary/5');
+                
+                const files = e.dataTransfer.files;
+                if (files.length > 0) {
+                    imageFileInput.files = files;
+                    handleImageUpload(files[0]);
+                }
+            });
+        }
+        
+        if (imageSelectBtn) {
+            imageSelectBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                imageFileInput.click();
+            });
+        }
+
+        // Text forensics event listeners
+        const textInput = document.getElementById('text-input');
+        const plagiarismBtn = document.getElementById('plagiarism-detection-btn');
+        const aiTextBtn = document.getElementById('ai-text-detection-btn');
+        
+        if (textInput) {
+            textInput.addEventListener('input', updateTextCharCount);
+            textInput.addEventListener('paste', () => {
+                setTimeout(updateTextCharCount, 10);
+            });
+            updateTextCharCount();
+        }
+        
+        if (plagiarismBtn) {
+            plagiarismBtn.addEventListener('click', function() {
+                startTextAnalysis('plagiarism');
+            });
+        }
+        
+        if (aiTextBtn) {
+            aiTextBtn.addEventListener('click', function() {
+                startTextAnalysis('ai-detection');
+            });
+        }
+
+        // Document forensics event listeners
+        const documentFileInput = document.getElementById('document-file-input');
+        const documentUploadArea = document.getElementById('document-upload-area');
+        const documentSelectBtn = document.getElementById('document-select-btn');
+        
+        if (documentFileInput) {
+            documentFileInput.addEventListener('change', function(e) {
+                const files = e.target.files;
+                if (files.length > 0) {
+                    handleDocumentUpload(files);
+                }
+            });
+        }
+        
+        if (documentUploadArea) {
+            documentUploadArea.addEventListener('click', function() {
+                documentFileInput.click();
+            });
+            
+            documentUploadArea.addEventListener('dragover', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                this.classList.add('border-primary', 'bg-primary/5');
+            });
+            
+            documentUploadArea.addEventListener('dragleave', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                this.classList.remove('border-primary', 'bg-primary/5');
+            });
+            
+            documentUploadArea.addEventListener('drop', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                this.classList.remove('border-primary', 'bg-primary/5');
+                
+                const files = e.dataTransfer.files;
+                if (files.length > 0) {
+                    documentFileInput.files = files;
+                    handleDocumentUpload(files);
+                }
+            });
+        }
+        
+        if (documentSelectBtn) {
+            documentSelectBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                documentFileInput.click();
+            });
+        }
+        
+        // Document analysis button handlers
+        const documentPlagiarismBtn = document.getElementById('document-plagiarism-btn');
+        const documentAiBtn = document.getElementById('document-ai-detection-btn');
+        
+        if (documentPlagiarismBtn) {
+            documentPlagiarismBtn.addEventListener('click', function() {
+                startDocumentAnalysis('plagiarism');
+            });
+        }
+        
+        if (documentAiBtn) {
+            documentAiBtn.addEventListener('click', function() {
+                startDocumentAnalysis('ai-detection');
+            });
+        }
+
+        // Integrity check event listeners
+        const integrityFileInput = document.getElementById('integrity-file-input');
+        const integrityUploadArea = document.getElementById('integrity-upload-area');
+        const integritySelectBtn = document.getElementById('integrity-select-btn');
+        
+        if (integrityFileInput) {
+            integrityFileInput.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    handleIntegrityUpload(file);
+                }
+            });
+        }
+        
+        if (integrityUploadArea) {
+            integrityUploadArea.addEventListener('click', function() {
+                integrityFileInput.click();
+            });
+            
+            integrityUploadArea.addEventListener('dragover', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                this.classList.add('border-primary', 'bg-primary/5');
+            });
+            
+            integrityUploadArea.addEventListener('dragleave', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                this.classList.remove('border-primary', 'bg-primary/5');
+            });
+            
+            integrityUploadArea.addEventListener('drop', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                this.classList.remove('border-primary', 'bg-primary/5');
+                
+                const files = e.dataTransfer.files;
+                if (files.length > 0) {
+                    integrityFileInput.files = files;
+                    handleIntegrityUpload(files[0]);
+                }
+            });
+        }
+        
+        if (integritySelectBtn) {
+            integritySelectBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                integrityFileInput.click();
+            });
+        }
+
+        // Initialize with dashboard section
+        showSection('dashboard');
+        
+        // Initial data load
+        if (typeof initFiles === 'function') {
+            initFiles();
+        } else {
+            console.warn('initFiles function not found, falling back to individual loaders');
+            loadUserStats();
+            if (typeof loadAllFiles === 'function') loadAllFiles();
+        }
+    
+        // Refresh stats every 30s
+        setInterval(() => {
+            if (document.getElementById('dashboard-section') && !document.getElementById('dashboard-section').classList.contains('hidden')) {
+                loadUserStats();
+            }
+        }, 30000);
+    });
+    
+</script>
+</body>
+</html>
+
+
+

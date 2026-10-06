@@ -1,0 +1,1519 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TrueVision | Forensic Intelligence Platform</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600&family=Space+Grotesk:wght@500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* ===== CSS RESET & GLOBAL STYLES ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            scroll-behavior: smooth;
+        }
+
+        html {
+            scroll-padding-top: 80px;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            line-height: 1.6;
+            overflow-x: hidden;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        h1, h2, h3, h4 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 700;
+            line-height: 1.2;
+        }
+
+        .mono {
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        ul {
+            list-style: none;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+        }
+
+        /* ===== CSS VARIABLES ===== */
+        :root {
+            /* Light Theme */
+            --bg-color: #ffffff;
+            --card-bg: #f8fafc;
+            --text-main: #0f172a;
+            --text-muted: #475569;
+            --border-color: #e2e8f0;
+            --primary: #3b82f6;
+            --primary-light: #60a5fa;
+            --primary-dark: #2563eb;
+            --primary-glow: rgba(59, 130, 246, 0.2);
+            --secondary: #8b5cf6;
+            --accent: #06b6d4;
+            --danger: #ef4444;
+            --success: #10b981;
+            --warning: #f59e0b;
+            
+            --glass: rgba(255, 255, 255, 0.7);
+            --glass-border: rgba(0, 0, 0, 0.08);
+            --glass-dark: rgba(15, 23, 42, 0.7);
+            
+            --gradient: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            --transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
+            --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+            --shadow-lg: 0 10px 40px rgba(0,0,0,0.1);
+            --shadow-xl: 0 20px 60px rgba(0,0,0,0.15);
+            
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+            --radius-xl: 20px;
+            
+            --spacing-xs: 0.5rem;
+            --spacing-sm: 1rem;
+            --spacing-md: 1.5rem;
+            --spacing-lg: 2rem;
+            --spacing-xl: 3rem;
+            --spacing-xxl: 4rem;
+        }
+
+        [data-theme="dark"] {
+            /* Dark Theme */
+            --bg-color: #020617;
+            --card-bg: #0f172a;
+            --text-main: #f1f5f9;
+            --text-muted: #94a3b8;
+            --border-color: #334155;
+            --glass: rgba(15, 23, 42, 0.7);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.3);
+            --shadow-md: 0 4px 12px rgba(0,0,0,0.3);
+            --shadow-lg: 0 10px 40px rgba(0,0,0,0.4);
+            --shadow-xl: 0 20px 60px rgba(0,0,0,0.5);
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+        }
+
+        /* ===== UTILITY CLASSES ===== */
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 var(--spacing-lg);
+        }
+
+        .section-padding {
+            padding: var(--spacing-xxl) 0;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .gradient-text {
+            background: linear-gradient(to right, #38bdf8, #818cf8, #c084fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 700;
+        }
+
+        .glass-effect {
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(12px);
+        }
+
+        .hidden {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+
+        .show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* ===== BUTTONS ===== */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 12px 32px;
+            border-radius: var(--radius-md);
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: var(--transition);
+            cursor: pointer;
+            border: 1px solid transparent;
+            text-align: center;
+            line-height: 1;
+            white-space: nowrap;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 0 20px -5px var(--primary-glow);
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 0 30px -5px var(--primary-glow);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--glass-border);
+            color: var(--text-main);
+        }
+
+        .btn-outline:hover {
+            border-color: var(--primary);
+            background: rgba(59, 130, 246, 0.1);
+        }
+
+        .btn-group {
+            display: flex;
+            gap: var(--spacing-sm);
+            flex-wrap: wrap;
+        }
+
+        /* ===== TAG PILL ===== */
+        .tag-pill {
+            display: inline-block;
+            padding: 6px 16px;
+            background: rgba(6, 182, 212, 0.1);
+            border: 1px solid rgba(6, 182, 212, 0.3);
+            color: var(--accent);
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: var(--spacing-lg);
+        }
+
+        /* ===== NAVBAR ===== */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: var(--spacing-sm) 0;
+            z-index: 1000;
+            transition: all 0.3s ease;
+            background: var(--glass);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: var(--spacing-lg);
+        }
+
+        .logo {
+            font-size: 1.6rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-shrink: 0;
+        }
+
+        .logo i {
+            color: var(--accent);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: var(--spacing-xl);
+            align-items: center;
+            margin: 0 auto;
+        }
+
+        .nav-links a {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            transition: color 0.3s ease;
+            position: relative;
+            padding: var(--spacing-xs) 0;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary);
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-lg);
+            flex-shrink: 0;
+        }
+
+        /* Theme Toggle */
+        .theme-toggle {
+            width: 44px;
+            height: 24px;
+            background: var(--card-bg);
+            border-radius: 50px;
+            border: 1px solid var(--border-color);
+            position: relative;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .theme-toggle-slider {
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 20px;
+            height: 20px;
+            background: var(--primary);
+            border-radius: 50%;
+            transition: transform 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            color: white;
+        }
+
+        [data-theme="dark"] .theme-toggle-slider {
+            transform: translateX(20px);
+        }
+
+        /* ===== HERO SECTION ===== */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            position: relative;
+            padding-top: 80px;
+            overflow: hidden;
+        }
+
+        .hero-bg-grid {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            background-size: 40px 40px;
+            background-image: 
+                linear-gradient(to right, rgba(59, 130, 246, 0.05) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(59, 130, 246, 0.05) 1px, transparent 1px);
+            z-index: -1;
+            mask-image: radial-gradient(circle at center, black 40%, transparent 80%);
+        }
+
+        [data-theme="dark"] .hero-bg-grid {
+            background-image: 
+                linear-gradient(to right, rgba(255,255,255,0.03) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(255,255,255,0.03) 1px, transparent 1px);
+        }
+
+        .hero-content {
+            flex: 1;
+            max-width: 600px;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: var(--spacing-lg);
+            letter-spacing: -1px;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            color: var(--text-muted);
+            margin-bottom: var(--spacing-xl);
+            max-width: 550px;
+        }
+
+        .hero-visual {
+            flex: 1;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 500px;
+        }
+
+        /* Scan Card */
+        .scan-card {
+            width: 100%;
+            max-width: 380px;
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-xl);
+            padding: var(--spacing-lg);
+            position: relative;
+            backdrop-filter: blur(20px);
+            box-shadow: var(--shadow-xl);
+            overflow: hidden;
+            z-index: 2;
+        }
+
+        .scan-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--spacing-lg);
+            padding-bottom: var(--spacing-sm);
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        .scan-body {
+            position: relative;
+        }
+
+        .scanner-line {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: var(--accent);
+            box-shadow: 0 0 15px var(--accent);
+            animation: scan 3s ease-in-out infinite;
+            z-index: 10;
+        }
+
+        .analysis-overlay {
+            position: absolute;
+            top: 20%;
+            right: -40px;
+            background: var(--card-bg);
+            border: 1px solid var(--glass-border);
+            padding: var(--spacing-md);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-md);
+            z-index: 3;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .score-circle {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: 3px solid var(--danger);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: var(--danger);
+            font-size: 0.9rem;
+        }
+
+        /* ===== FEATURES SECTION ===== */
+        .section-header {
+            text-align: center;
+            margin-bottom: var(--spacing-xxl);
+        }
+
+        .section-header h2 {
+            font-size: 2.8rem;
+            margin-bottom: var(--spacing-md);
+        }
+
+        .section-header p {
+            color: var(--text-muted);
+            max-width: 600px;
+            margin: 0 auto;
+            font-size: 1.1rem;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: var(--spacing-lg);
+            margin-top: var(--spacing-xl);
+        }
+
+        .feature-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            padding: var(--spacing-xl);
+            border-radius: var(--radius-lg);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+            height: 100%;
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--primary), transparent);
+            transform: scaleX(0);
+            transition: transform 0.4s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .feature-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .icon-box {
+            width: 50px;
+            height: 50px;
+            background: rgba(59, 130, 246, 0.1);
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            color: var(--primary);
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .feature-card h3 {
+            font-size: 1.3rem;
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .feature-card p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        /* ===== STATS SECTION ===== */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--spacing-lg);
+            margin-top: var(--spacing-xl);
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            padding: var(--spacing-xl) var(--spacing-md);
+            border-radius: var(--radius-lg);
+            text-align: center;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 700;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: var(--spacing-xs);
+            line-height: 1;
+        }
+
+        .stat-label {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .stat-icon {
+            width: 50px;
+            height: 50px;
+            background: rgba(59, 130, 246, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            color: var(--primary);
+            margin: 0 auto var(--spacing-lg);
+            transition: transform 0.5s ease;
+        }
+
+        .stat-card:hover .stat-icon {
+            transform: scale(1.1);
+        }
+
+        /* ===== ARTICLES SECTION ===== */
+        .articles-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: var(--spacing-lg);
+            margin-top: var(--spacing-xl);
+        }
+
+        .article-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            transition: var(--transition);
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .article-card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .article-image {
+            height: 200px;
+            width: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .article-card:hover .article-image {
+            transform: scale(1.05);
+        }
+
+        .article-content {
+            padding: var(--spacing-lg);
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .article-meta {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            margin-bottom: var(--spacing-sm);
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .article-category {
+            background: rgba(6, 182, 212, 0.1);
+            color: var(--accent);
+            padding: 4px 12px;
+            border-radius: 50px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .article-card h3 {
+            font-size: 1.2rem;
+            margin-bottom: var(--spacing-sm);
+            line-height: 1.4;
+        }
+
+        .article-card p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            margin-bottom: var(--spacing-md);
+            flex-grow: 1;
+        }
+
+        .article-link {
+            color: var(--primary);
+            font-weight: 600;
+            font-size: 0.9rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: gap 0.3s ease;
+        }
+
+        .article-link:hover {
+            gap: 12px;
+        }
+
+        /* ===== SPLIT SECTIONS ===== */
+        .split-container {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-xxl);
+            margin-bottom: var(--spacing-xxl);
+        }
+
+        .split-container:nth-child(even) {
+            flex-direction: row-reverse;
+        }
+
+        .split-text, .split-visual {
+            flex: 1;
+        }
+
+        .split-visual img {
+            width: 100%;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--border-color);
+        }
+
+        .split-text h2 {
+            font-size: 2.5rem;
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .split-text p {
+            color: var(--text-muted);
+            margin-bottom: var(--spacing-lg);
+            font-size: 1.1rem;
+        }
+
+        .check-list {
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .check-list li {
+            margin-bottom: var(--spacing-sm);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            color: var(--text-main);
+        }
+
+        .check-list i {
+            color: var(--success);
+        }
+
+        /* ===== API SECTION ===== */
+        .api-section {
+            background: var(--card-bg);
+            border-radius: var(--radius-xl);
+            padding: var(--spacing-xxl);
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow-sm);
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: var(--spacing-xl);
+        }
+
+        .api-content {
+            flex: 1;
+            min-width: 300px;
+        }
+
+        .api-content h2 {
+            font-size: 2.5rem;
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .api-content p {
+            color: var(--text-muted);
+            margin-bottom: var(--spacing-xl);
+            font-size: 1.1rem;
+        }
+
+        .api-metrics {
+            display: flex;
+            gap: var(--spacing-xl);
+            margin-top: var(--spacing-lg);
+        }
+
+        .api-metric {
+            flex: 1;
+        }
+
+        .api-metric h4 {
+            font-size: 2rem;
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .api-metric span {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .code-block {
+            flex: 1;
+            min-width: 300px;
+            background: #1e293b;
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-lg);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+            color: #cbd5e1;
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow-md);
+            overflow-x: auto;
+        }
+
+        .code-header {
+            display: flex;
+            gap: 8px;
+            margin-bottom: var(--spacing-md);
+        }
+
+        .code-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .code-dot.red { background: #ef4444; }
+        .code-dot.yellow { background: #f59e0b; }
+        .code-dot.green { background: #10b981; }
+
+        .code-keyword { color: #c084fc; }
+        .code-string { color: #10b981; }
+        .code-comment { color: #60a5fa; }
+        .code-function { color: #f59e0b; }
+
+        /* ===== CTA BANNER ===== */
+        .cta-banner {
+            position: relative;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            padding: var(--spacing-xxl) var(--spacing-xl);
+            text-align: center;
+            border-radius: var(--radius-xl);
+            overflow: hidden;
+            margin: var(--spacing-xxl) 0;
+            border: 1px solid var(--glass-border);
+        }
+
+        .cta-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(2, 6, 23, 0.9);
+            z-index: 1;
+        }
+/* 
+        [data-theme="dark"] .cta-overlay {
+            background: rgba(255, 255, 255, 0.9);
+        } */
+
+        .cta-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .cta-content h2 {
+            font-size: 3rem;
+            margin-bottom: var(--spacing-lg);
+            color: white;
+        }
+
+        .cta-content p {
+            font-size: 1.2rem;
+            color: rgba(255,255,255,0.9);
+            margin-bottom: var(--spacing-xl);
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* ===== FOOTER ===== */
+        footer {
+            background: var(--card-bg);
+            padding: var(--spacing-xxl) 0 var(--spacing-lg);
+            border-top: 1px solid var(--border-color);
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: var(--spacing-xl);
+            margin-bottom: var(--spacing-xxl);
+        }
+
+        .footer-col h4 {
+            font-size: 1.1rem;
+            margin-bottom: var(--spacing-lg);
+            color: var(--text-main);
+        }
+
+        .footer-col a {
+            display: block;
+            margin-bottom: var(--spacing-sm);
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            transition: color 0.3s ease;
+        }
+
+        .footer-col a:hover {
+            color: var(--primary);
+        }
+
+        .footer-social {
+            display: flex;
+            gap: var(--spacing-md);
+            margin-top: var(--spacing-lg);
+        }
+
+        .footer-social i {
+            font-size: 1.2rem;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .footer-social i:hover {
+            color: var(--primary);
+        }
+
+        .copyright {
+            text-align: center;
+            padding-top: var(--spacing-lg);
+            border-top: 1px solid var(--border-color);
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        /* ===== ANIMATIONS ===== */
+        @keyframes scan {
+            0% { top: 0; opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { top: 100%; opacity: 0; }
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-15px); }
+            100% { transform: translateY(0px); }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-fade-in-up {
+            animation: fadeInUp 0.8s ease-out forwards;
+        }
+
+        /* ===== RESPONSIVE DESIGN ===== */
+        @media (max-width: 1024px) {
+            .hero h1 {
+                font-size: 3rem;
+            }
+            
+            .section-header h2 {
+                font-size: 2.5rem;
+            }
+            
+            .split-container {
+                gap: var(--spacing-xl);
+            }
+            
+            .footer-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: var(--spacing-xl);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 var(--spacing-md);
+            }
+            
+            .hero {
+                flex-direction: column;
+                text-align: center;
+                padding-top: 120px;
+                gap: var(--spacing-xl);
+            }
+            
+            .hero-content {
+                max-width: 100%;
+            }
+            
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .section-padding {
+                padding: var(--spacing-xl) 0;
+            }
+            
+            .section-header h2 {
+                font-size: 2rem;
+            }
+            
+            .split-container {
+                flex-direction: column !important;
+                gap: var(--spacing-xl);
+            }
+            
+            .nav-links {
+                display: none;
+            }
+            
+            .api-section {
+                padding: var(--spacing-xl);
+            }
+            
+            .cta-content h2 {
+                font-size: 2.5rem;
+            }
+            
+            .stat-number {
+                font-size: 2.5rem;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .features-grid,
+            .articles-grid,
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .btn-group {
+                flex-direction: column;
+                width: 100%;
+            }
+            
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .footer-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .api-metrics {
+                flex-direction: column;
+                gap: var(--spacing-md);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav id="navbar" class="glass-effect">
+        <div class="container nav-container">
+            <div class="logo">
+                <i class="fa-solid fa-shield-halved"></i> TrueVision
+            </div>
+            
+            <ul class="nav-links">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#platform">Platform</a></li>
+                <li><a href="#solutions">Solutions</a></li>
+                <li><a href="#articles">Insights</a></li>
+                <li><a href="#api">Developers</a></li>
+            </ul>
+
+            <div class="nav-actions">
+                <div class="theme-toggle" id="themeToggle">
+                    <div class="theme-toggle-slider">
+                        <i class="fas fa-sun"></i>
+                    </div>
+                </div>
+                {% if user.is_authenticated %}
+                    <a href="{% url 'dashboard' %}" class="btn btn-primary">
+                        Dashboard <i class="fas fa-arrow-right"></i>
+                    </a>
+                {% else %}
+                    <a href="{% url 'signin' %}" class="btn btn-primary">
+                        Get Started <i class="fas fa-arrow-right"></i>
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero container" id="home">
+        <div class="hero-bg-grid"></div>
+        
+        <div class="hero-content hidden">
+            <div class="tag-pill"><i class="fa-solid fa-bolt"></i> AI-Powered Forensics</div>
+            <h1>The Truth, <br><span class="gradient-text">Verified by Intelligence.</span></h1>
+            <p>Detect deepfakes, manipulated documents, and AI-generated text with accuracy. Secure your platform against the next generation of fraud.</p>
+            
+            <div class="btn-group">
+                {% if user.is_authenticated %}
+                    <a href="{% url 'dashboard' %}" class="btn btn-primary"><i class="fa-solid fa-chart-line"></i> Go to Dashboard</a>
+                {% else %}
+                    <a href="{% url 'signin' %}" class="btn btn-primary"><i class="fa-solid fa-upload"></i> Sign Up Free</a>
+                    
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="hero-visual hidden">
+            <div class="scan-card">
+                <div class="scanner-line"></div>
+                
+                <div class="scan-header">
+                    <span class="mono" style="font-size: 0.8rem; color: var(--text-muted);">ID: #8821-XJ</span>
+                    <span class="mono" style="font-size: 0.8rem; color: var(--danger);">SUSPICIOUS</span>
+                </div>
+                
+                <div class="scan-body">
+                    <div style="display: flex; gap: 15px; align-items: center; margin-bottom: 15px;">
+                        <div style="width: 60px; height: 60px; background: var(--text-muted); opacity: 0.3; border-radius: 50%;"></div>
+                        <div style="flex: 1;">
+                            <div style="height: 10px; width: 60%; background: var(--text-muted); opacity: 0.2; margin-bottom: 8px; border-radius: 4px;"></div>
+                            <div style="height: 8px; width: 40%; background: var(--text-muted); opacity: 0.2; border-radius: 4px;"></div>
+                        </div>
+                    </div>
+                    <div style="height: 8px; width: 100%; background: var(--text-muted); opacity: 0.1; margin-bottom: 10px; border-radius: 4px;"></div>
+                    <div style="height: 8px; width: 90%; background: var(--text-muted); opacity: 0.1; margin-bottom: 10px; border-radius: 4px;"></div>
+                    <div style="height: 8px; width: 95%; background: var(--text-muted); opacity: 0.1; margin-bottom: 10px; border-radius: 4px;"></div>
+                </div>
+
+                <div class="analysis-overlay">
+                    <div style="display: flex; align-items: center; gap: 15px;">
+                        <div class="score-circle">89%</div>
+                        <div>
+                            <div style="font-size: 0.8rem; font-weight: bold; color: var(--text-main);">AI-Generated</div>
+                            <div style="font-size: 0.7rem; color: var(--text-muted);">High Confidence</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="platform" class="section-padding">
+        <div class="container">
+            <div class="section-header hidden">
+                <div class="tag-pill">CORE CAPABILITIES</div>
+                <h2>Complete Forensic Suite</h2>
+                <p>One API to detect fraud across every content type. Stop bad actors before they enter your ecosystem.</p>
+            </div>
+
+            <div class="features-grid">
+                <div class="feature-card hidden">
+                    <div class="icon-box"><i class="fa-solid fa-file-contract"></i></div>
+                    <h3>Document Forensics</h3>
+                    <p>Analyze metadata structures, font inconsistencies, and digital signatures to catch forged bank statements, IDs, and invoices.</p>
+                </div>
+                
+                <div class="feature-card hidden">
+                    <div class="icon-box"><i class="fa-solid fa-image"></i></div>
+                    <h3>Image Manipulation</h3>
+                    <p>Detect Deepfakes (GANs/Diffusion models), Photoshop edits, and cloned regions using error level analysis.</p>
+                </div>
+                
+                <div class="feature-card hidden">
+                    <div class="icon-box"><i class="fa-solid fa-pen-nib"></i></div>
+                    <h3>Gen-AI Text Detection</h3>
+                    <p>Identify text written by LLMs (ChatGPT, Claude, Llama) with high precision to maintain academic and legal integrity.</p>
+                </div>
+
+                <div class="feature-card hidden">
+                    <div class="icon-box"><i class="fa-solid fa-user-secret"></i></div>
+                    <h3>Synthetic Identity</h3>
+                    <p>Cross-reference facial biometrics with ID documents to prevent synthetic identity fraud during onboarding.</p>
+                </div>
+
+                <div class="feature-card hidden">
+                    <div class="icon-box"><i class="fa-solid fa-network-wired"></i></div>
+                    <h3>Metadata Extraction</h3>
+                    <p>Extract EXIF, XMP, and IPTC data to geolocate images and verify device fingerprints.</p>
+                </div>
+
+                <div class="feature-card hidden">
+                    <div class="icon-box"><i class="fa-solid fa-lock"></i></div>
+                    <h3>Enterprise Grade</h3>
+                    <p>Bank-level encryption (AES-256), ISO 27001 compliance, and on-premise deployment options.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section id="stats" class="section-padding">
+        <div class="container">
+            <div class="section-header hidden">
+                <div class="tag-pill" style="background: rgba(59, 130, 246, 0.1); border-color: rgba(59, 130, 246, 0.3); color: var(--primary);">
+                    <i class="fa-solid fa-check-circle"></i> Trusted by Industry Leaders
+                </div>
+                <h2 class="gradient-text">Real Impact, Real Results</h2>
+                <p>Our platform powers investigations worldwide, delivering unmatched precision in every analysis.</p>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card hidden">
+                    <div class="stat-icon"><i class="fa-solid fa-file-alt"></i></div>
+                    <div class="stat-number">{% if total_files %}{{ total_files }}+{% else %}10000+{% endif %}</div>
+                    <div class="stat-label">Files Analyzed</div>
+                </div>
+                
+                <div class="stat-card hidden">
+                    <div class="stat-icon" style="background: rgba(16, 185, 129, 0.1); color: var(--success);"><i class="fa-solid fa-chart-line"></i></div>
+                    <div class="stat-number" >{% if accuracy_rate %}{{ accuracy_rate }}%{% else %}99.9%{% endif %}</div>
+                    <div class="stat-label">Accuracy Rate</div>
+                </div>
+                
+                <div class="stat-card hidden">
+                    <div class="stat-icon" style="background: rgba(239, 68, 68, 0.1); color: var(--danger);"><i class="fa-solid fa-shield-exclamation"></i></div>
+                    <div class="stat-number" >{% if total_threats %}{{ total_threats }}+{% else %}5000+{% endif %}</div>
+                    <div class="stat-label">Threats Detected</div>
+                </div>
+                
+                <div class="stat-card hidden">
+                    <div class="stat-icon" style="background: rgba(139, 92, 246, 0.1); color: var(--secondary);"><i class="fa-solid fa-users"></i></div>
+                    <div class="stat-number" >{% if happy_clients %}{{ happy_clients }}+{% else %}200+{% endif %}</div>
+                    <div class="stat-label">Happy Clients</div>
+                </div>
+            </div>
+
+            <div class="section-header hidden" style="margin-top: var(--spacing-xxl);">
+                <p style="font-size: 1.1rem; color: var(--text-muted); max-width: 500px; margin: 0 auto;">Join leading organizations safeguarding their digital assets with TrueVision</p>
+                <a href="{% url 'signin' %}" class="btn btn-primary" style="margin-top: 30px; padding: 15px 40px; font-size: 1.1rem;">
+                    Start Your Free Trial <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Articles Section -->
+    <section id="articles" class="section-padding">
+        <div class="container">
+            <div class="section-header hidden">
+                <div class="tag-pill">INSIGHTS & RESEARCH</div>
+                <h2>Latest Forensic Intelligence</h2>
+                <p>Stay updated with the latest trends, research, and insights in digital forensics and AI security.</p>
+            </div>
+
+            <div class="articles-grid">
+                <article class="article-card hidden">
+                    <img src="https://images.unsplash.com/photo-1677442136019-21780ecad995?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Deepfake Detection" class="article-image">
+                    <div class="article-content">
+                        <div class="article-meta">
+                            <span class="article-category">Research</span>
+                            <span>Mar 15, 2024</span>
+                        </div>
+                        <h3>Advanced Deepfake Detection: Beyond Facial Analysis</h3>
+                        <p>Learn how our latest algorithms detect subtle artifacts in audio, background, and lighting that traditional methods miss.</p>
+                        <!-- <a href="#" class="article-link">
+                            Read More <i class="fas fa-arrow-right"></i>
+                        </a> -->
+                    </div>
+                </article>
+
+                <article class="article-card hidden">
+                    <img src="https://images.unsplash.com/photo-1558494949-ef010cbdcc31?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Document Security" class="article-image">
+                    <div class="article-content">
+                        <div class="article-meta">
+                            <span class="article-category">Case Study</span>
+                            <span>Feb 28, 2024</span>
+                        </div>
+                        <h3>How Financial Institutions Prevent Document Forgery</h3>
+                        <p>Real-world implementation of our document verification system preventing $4.2M in fraud annually.</p>
+                        <!-- <a href="#" class="article-link">
+                            Read More <i class="fas fa-arrow-right"></i>
+                        </a> -->
+                    </div>
+                </article>
+
+                <article class="article-card hidden">
+                    <img src="https://images.unsplash.com/photo-1620712943543-bcc4688e7485?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="AI Text Analysis" class="article-image">
+                    <div class="article-content">
+                        <div class="article-meta">
+                            <span class="article-category">Technical</span>
+                            <span>Feb 10, 2024</span>
+                        </div>
+                        <h3>Detecting AI-Generated Text in Academic Submissions</h3>
+                        <p>Our breakthrough in linguistic pattern analysis identifies LLM-generated content with 99.1% accuracy.</p>
+                        <!-- <a href="#" class="article-link">
+                            Read More <i class="fas fa-arrow-right"></i>
+                        </a> -->
+                    </div>
+                </article>
+
+                <article class="article-card hidden">
+                    <img src="{% static 'images/ai.jpg' %}" alt="Legal Tech" class="article-image">
+                    <div class="article-content">
+                        <div class="article-meta">
+                            <span class="article-category">Industry</span>
+                            <span>Jan 25, 2024</span>
+                        </div>
+                        <h3>The Legal Implications of AI-Generated Evidence</h3>
+                        <p>How courts worldwide are adapting to the challenges of verifying digital evidence in the AI era.</p>
+                        <!-- <a href="#" class="article-link">
+                            Read More <i class="fas fa-arrow-right"></i>
+                        </a> -->
+                    </div>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <!-- Deep Dive Sections -->
+    <section id="solutions" class="section-padding">
+        <div class="container">
+            <div class="split-container hidden">
+                <div class="split-visual">
+                    <img src="https://images.unsplash.com/photo-1555949963-ff9fe0c870eb?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Code analysis">
+                </div>
+                <div class="split-text">
+                    <h2 class="gradient-text">Unmask Deepfakes in Milliseconds.</h2>
+                    <p>As Generative AI evolves, so does fraud. Our neural networks are trained on the latest diffusion models to detect anomalies invisible to the human eye.</p>
+                    <ul class="check-list">
+                        <li><i class="fa-solid fa-check"></i> Sub-pixel artifact detection</li>
+                        <li><i class="fa-solid fa-check"></i> Lighting & shadow physics analysis</li>
+                        <li><i class="fa-solid fa-check"></i> Real-time video stream processing</li>
+                    </ul>
+                    <!-- <a href="#" class="btn btn-outline" style="margin-top: 20px;">Read Case Study <i class="fa-solid fa-arrow-right" style="font-size: 0.8rem;"></i></a> -->
+                </div>
+            </div>
+
+            <div class="split-container hidden">
+                <div class="split-visual">
+                    <img src="https://images.unsplash.com/photo-1563986768609-322da13575f3?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Data security">
+                </div>
+                <div class="split-text">
+                    <h2 class="gradient-text">Automated Document Verification (KYC).</h2>
+                    <p>Streamline user onboarding while reducing fraud losses. We verify government IDs, proof of address, and financial documents instantly.</p>
+                    <ul class="check-list">
+                        <li><i class="fa-solid fa-check"></i> Supports 12,000+ document types</li>
+                        <li><i class="fa-solid fa-check"></i> Checks for copy-paste tampering</li>
+                        <li><i class="fa-solid fa-check"></i> OCR with 99.8% accuracy</li>
+                    </ul>
+                    <a href="{% url 'signin' %}" class="btn btn-primary" style="margin-top: 20px;">Start Free Trial</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Code Block / API Section -->
+    <section id="api" class="section-padding">
+        <div class="container">
+            <div class="api-section hidden">
+                <div class="api-content">
+                    <h2>Built for Developers</h2>
+                    <p>
+                        Integrate forensic capabilities into your app with just a few lines of code. Our REST API is fast, documented, and reliable.
+                    </p>
+                    <div class="api-metrics">
+                        <div class="api-metric">
+                            <h4 class="gradient-text">50ms</h4>
+                            <span>Avg Latency</span>
+                        </div>
+                        <div class="api-metric">
+                            <h4 class="gradient-text">99.99%</h4>
+                            <span>Uptime SLA</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="code-block">
+                    <div class="code-header">
+                        <div class="code-dot red"></div>
+                        <div class="code-dot yellow"></div>
+                        <div class="code-dot green"></div>
+                    </div>
+                    <p><span class="code-keyword">const</span> trueVision = <span class="code-keyword">require</span>('truevision-sdk');</p>
+                    <p>&nbsp;</p>
+                    <p><span class="code-comment">// Analyze an image for manipulation</span></p>
+                    <p><span class="code-keyword">const</span> result = <span class="code-keyword">await</span> trueVision.scan({</p>
+                    <p>&nbsp;&nbsp;type: <span class="code-string">'image'</span>,</p>
+                    <p>&nbsp;&nbsp;url: <span class="code-string">'https://user-upload.jpg'</span>,</p>
+                    <p>&nbsp;&nbsp;deepScan: <span class="code-keyword">true</span></p>
+                    <p>});</p>
+                    <p>&nbsp;</p>
+                    <p><span class="code-keyword">if</span> (result.score > <span class="code-keyword">0.85</span>) {</p>
+                    <p>&nbsp;&nbsp;<span class="code-function">console</span>.log(<span class="code-string">'Flagged as AI Generated'</span>);</p>
+                    <p>}</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Large CTA Banner -->
+    <div class="container">
+        <section class="cta-banner hidden">
+            <div class="cta-overlay"></div>
+            <div class="cta-content">
+                <h2>Secure Your Digital Ecosystem Today</h2>
+                <p>Join {% if total_enterprises %}{{ total_enterprises }}{% else %}500+{% endif %} enterprises using TrueVision to detect fraud and ensure compliance.</p>
+                <div class="btn-group" style="justify-content: center;">
+                    {% if user.is_authenticated %}
+                        <a href="{% url 'dashboard' %}" class="btn btn-primary" style="padding: 15px 40px; font-size: 1.1rem; background: white; color: var(--primary);">Go to Dashboard</a>
+                    {% else %}
+                        <a href="{% url 'signin' %}" class="btn btn-primary" style="padding: 15px 40px; font-size: 1.1rem; background: white; color: var(--primary);">Sign Up Free</a>
+                        
+                    {% endif %}
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <div class="logo" style="margin-bottom: 20px;"><i class="fa-solid fa-shield-halved"></i> TrueVision</div>
+                    <p style="color: var(--text-muted); font-size: 0.9rem; max-width: 250px; line-height: 1.6;">
+                        The leading standard in forensic AI analysis for documents, images, and generative content.
+                    </p>
+                    <div class="footer-social">
+                        <i class="fa-brands fa-twitter"></i>
+                        <i class="fa-brands fa-github"></i>
+                        <i class="fa-brands fa-linkedin"></i>
+                    </div>
+                </div>
+                
+                <div class="footer-col">
+                    <h4>Platform</h4>
+                    <a href="#">Image Forensics</a>
+                    <a href="#">Deepfake Detection</a>
+                    <a href="#">Document Verification</a>
+                    <a href="#">LLM Text Analysis</a>
+                </div>
+                
+                <div class="footer-col">
+                    <h4>Resources</h4>
+                    <a href="#articles">Insights</a>
+                    <a href="#api">API Documentation</a>
+                    <a href="#">Status</a>
+                    <a href="#">Community</a>
+                </div>
+
+                <div class="footer-col">
+                    <h4>Company</h4>
+                    <a href="#">About Us</a>
+                    <a href="#">Security</a>
+                    <a href="#">Enterprise</a>
+                    <a href="#">Contact</a>
+                </div>
+            </div>
+            
+            <div class="copyright">
+                &copy; 2024 TrueVision Technologies Inc. All rights reserved. <a href="#" style="color: var(--primary);">Privacy Policy</a> | <a href="#" style="color: var(--primary);">Terms of Service</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script>
+        // Theme Toggle
+        const themeToggle = document.getElementById('themeToggle');
+        const body = document.body;
+        
+        const savedTheme = localStorage.getItem('theme');
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        
+        if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
+            body.setAttribute('data-theme', 'dark');
+        }
+        
+        themeToggle.addEventListener('click', () => {
+            if (body.getAttribute('data-theme') === 'dark') {
+                body.removeAttribute('data-theme');
+                localStorage.setItem('theme', 'light');
+            } else {
+                body.setAttribute('data-theme', 'dark');
+                localStorage.setItem('theme', 'dark');
+            }
+        });
+
+        // Navbar Scroll Effect
+        const navbar = document.getElementById('navbar');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                navbar.style.background = 'rgba(255, 255, 255, 0.95)';
+                navbar.style.borderBottomColor = 'rgba(0, 0, 0, 0.1)';
+                if (body.getAttribute('data-theme') === 'dark') {
+                    navbar.style.background = 'rgba(15, 23, 42, 0.95)';
+                    navbar.style.borderBottomColor = 'rgba(255, 255, 255, 0.1)';
+                }
+            } else {
+                navbar.style.background = 'rgba(255, 255, 255, 0.6)';
+                navbar.style.borderBottomColor = 'transparent';
+                if (body.getAttribute('data-theme') === 'dark') {
+                    navbar.style.background = 'rgba(15, 23, 42, 0.6)';
+                }
+            }
+        });
+
+        // Intersection Observer for Animations
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('show');
+                }
+            });
+        }, { threshold: 0.1 });
+
+        const hiddenElements = document.querySelectorAll('.hidden');
+        hiddenElements.forEach((el) => observer.observe(el));
+
+        // Smooth Scrolling for Anchor Links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href');
+                if (targetId === '#') return;
+                
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 80,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+
+        // Initialize navbar background
+        window.dispatchEvent(new Event('scroll'));
+    </script>
+</body>
+</html>

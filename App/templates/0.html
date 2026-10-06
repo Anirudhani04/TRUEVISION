@@ -1,0 +1,932 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TrueVision - AI-Powered Digital Forensics</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --background: #ffffff;
+            --foreground: #0f172a;
+            --card: #f8fafc;
+            --card-foreground: #0f172a;
+            --primary: #10b981;
+            --primary-foreground: #ffffff;
+            --secondary: #64748b;
+            --secondary-foreground: #ffffff;
+            --accent: #0ea5e9;
+            --accent-foreground: #ffffff;
+            --muted: #f1f5f9;
+            --muted-foreground: #64748b;
+            --destructive: #ef4444;
+            --destructive-foreground: #ffffff;
+            --border: #e2e8f0;
+            --input: #ffffff;
+            --ring: #10b981;
+        }
+        .dark {
+            --background: #0a0a0a;
+            --foreground: #f8fafc;
+            --card: #1a1a1a;
+            --card-foreground: #f8fafc;
+            --primary: #10b981;
+            --primary-foreground: #0a0a0a;
+            --secondary: #334155;
+            --secondary-foreground: #f8fafc;
+            --accent: #0ea5e9;
+            --accent-foreground: #0a0a0a;
+            --muted: #1e293b;
+            --muted-foreground: #94a3b8;
+            --destructive: #ef4444;
+            --destructive-foreground: #f8fafc;
+            --border: #334155;
+            --input: #1e293b;
+            --ring: #10b981;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--background);
+            color: var(--foreground);
+            overflow-x: hidden;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        /* Gradient backgrounds */
+        .hero-banner {
+            background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=2070&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+        
+        .feature-gradient-bg {
+            background: radial-gradient(circle at 20% 80%, rgba(16, 185, 129, 0.1) 0%, transparent 50%),
+                        radial-gradient(circle at 80% 20%, rgba(14, 165, 233, 0.1) 0%, transparent 50%);
+        }
+        
+        /* Glass morphism effect */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .dark .glass-card {
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        /* Enhanced animations */
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            33% { transform: translateY(-20px) rotate(120deg); }
+            66% { transform: translateY(10px) rotate(240deg); }
+        }
+        
+        @keyframes shimmer {
+            0% { background-position: -1000px 0; }
+            100% { background-position: 1000px 0; }
+        }
+        
+        @keyframes border-glow {
+            0%, 100% { border-color: rgba(16, 185, 129, 0.3); }
+            50% { border-color: rgba(16, 185, 129, 0.8); }
+        }
+        
+        @keyframes pulse-glow {
+            0%, 100% { box-shadow: 0 0 20px rgba(16, 185, 129, 0.3); }
+            50% { box-shadow: 0 0 40px rgba(16, 185, 129, 0.6); }
+        }
+        
+        @keyframes slide-up {
+            from {
+                opacity: 0;
+                transform: translateY(50px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+        
+        @keyframes fade-in {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .animate-float-slow {
+            animation: float 8s ease-in-out infinite;
+        }
+        
+        .animate-shimmer {
+            background: linear-gradient(90deg, 
+                transparent 0%, 
+                rgba(255, 255, 255, 0.1) 50%, 
+                transparent 100%);
+            background-size: 1000px 100%;
+            animation: shimmer 3s infinite;
+        }
+        
+        .animate-border-glow {
+            animation: border-glow 3s ease-in-out infinite;
+        }
+        
+        .animate-pulse-glow {
+            animation: pulse-glow 2s ease-in-out infinite;
+        }
+        
+        .animate-slide-up {
+            animation: slide-up 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+        
+        .animate-fade-in {
+            animation: fade-in 1s ease-out forwards;
+        }
+        
+        /* Enhanced interactive elements */
+        .hover-lift {
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+                        box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .hover-lift:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        }
+        
+        .hover-glow {
+            transition: box-shadow 0.3s ease;
+        }
+        
+        .hover-glow:hover {
+            box-shadow: 0 0 30px rgba(16, 185, 129, 0.3);
+        }
+        
+        /* Custom scrollbar */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: var(--muted);
+            border-radius: 10px;
+        }
+        
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: linear-gradient(to bottom, var(--primary), var(--accent));
+            border-radius: 10px;
+        }
+        
+        /* Gradient text */
+        .gradient-text {
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        /* Loading skeleton */
+        .skeleton {
+            background: linear-gradient(90deg, 
+                var(--muted) 25%, 
+                var(--border) 50%, 
+                var(--muted) 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+        }
+        
+        /* Enhanced form styles */
+        .input-enhanced {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            background: var(--input);
+            border: 2px solid var(--border);
+        }
+        
+        .input-enhanced:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1),
+                        inset 0 2px 4px rgba(0, 0, 0, 0.05);
+            transform: translateY(-1px);
+        }
+        
+        /* Particle background */
+        .particles-container {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        .particle {
+            position: absolute;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            border-radius: 50%;
+            opacity: 0.1;
+            animation: float 20s infinite linear;
+        }
+        
+        /* Progress indicator */
+        .progress-ring {
+            stroke-dasharray: 283;
+            stroke-dashoffset: 283;
+            transition: stroke-dashoffset 1s ease-out;
+        }
+        
+        /* Page transition */
+        .page-transition {
+            animation: fade-in 0.6s ease-out;
+        }
+
+        /* Color utilities for dynamic classes */
+        .bg-emerald-500\/20 { background-color: rgba(16, 185, 129, 0.2); }
+        .bg-red-500\/20 { background-color: rgba(239, 68, 68, 0.2); }
+        .bg-teal-500\/20 { background-color: rgba(20, 184, 166, 0.2); }
+        .bg-blue-500\/20 { background-color: rgba(59, 130, 246, 0.2); }
+        .bg-purple-500\/20 { background-color: rgba(139, 92, 246, 0.2); }
+        .bg-amber-500\/20 { background-color: rgba(245, 158, 11, 0.2); }
+        
+        .text-emerald-500 { color: #10b981; }
+        .text-red-500 { color: #ef4444; }
+        .text-teal-500 { color: #14b8a6; }
+        .text-blue-500 { color: #3b82f6; }
+        .text-purple-500 { color: #8b5cf6; }
+        .text-amber-500 { color: #f59e0b; }
+        
+        .border-emerald-500\/20 { border-color: rgba(16, 185, 129, 0.2); }
+        .border-red-500\/20 { border-color: rgba(239, 68, 68, 0.2); }
+        .border-teal-500\/20 { border-color: rgba(20, 184, 166, 0.2); }
+        .border-blue-500\/20 { border-color: rgba(59, 130, 246, 0.2); }
+        .border-purple-500\/20 { border-color: rgba(139, 92, 246, 0.2); }
+        .border-amber-500\/20 { border-color: rgba(245, 158, 11, 0.2); }
+        
+        .from-emerald-500\/20 { --tw-gradient-from: rgba(16, 185, 129, 0.2); }
+        .from-red-500\/20 { --tw-gradient-from: rgba(239, 68, 68, 0.2); }
+        .from-teal-500\/20 { --tw-gradient-from: rgba(20, 184, 166, 0.2); }
+        .from-blue-500\/20 { --tw-gradient-from: rgba(59, 130, 246, 0.2); }
+        .from-purple-500\/20 { --tw-gradient-from: rgba(139, 92, 246, 0.2); }
+        .from-amber-500\/20 { --tw-gradient-from: rgba(245, 158, 11, 0.2); }
+    </style>
+</head>
+<body class="min-h-screen page-transition">
+    <!-- Particle Background -->
+    <div class="particles-container" id="particles"></div>
+    
+    <!-- Navigation Progress -->
+    <div class="fixed top-0 left-0 right-0 h-1 bg-transparent z-50">
+        <div class="h-full bg-gradient-to-r from-emerald-500 to-teal-500" style="width: 0%" id="progress-bar"></div>
+    </div>
+    
+    <!-- Header -->
+    <header id="main-header" class="sticky top-0 z-40 transition-all duration-300">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center gap-3">
+                    <div class="h-10 w-10 rounded-xl bg-gradient-to-br from-emerald-600 to-teal-600 text-white grid place-content-center">
+                        <i class="fas fa-shield-alt text-xl"></i>
+                    </div>
+                    <span id="logo-text" class="text-xl font-bold text-white transition-colors duration-300">
+                        TrueVision
+                    </span>
+                </div>
+                
+                <nav id="nav-menu" class="hidden md:flex items-center gap-8 text-white">
+                    <a href="#" class="relative font-medium hover:text-emerald-400 transition-colors group">
+                        Home
+                        <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-emerald-400 group-hover:w-full transition-all duration-300"></span>
+                    </a>
+                    <a href="#features" class="relative font-medium hover:text-emerald-400 transition-colors group">
+                        Features
+                        <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-emerald-400 group-hover:w-full transition-all duration-300"></span>
+                    </a>
+                    <a href="#stats" class="relative font-medium hover:text-emerald-400 transition-colors group">
+                        Stats
+                        <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-emerald-400 group-hover:w-full transition-all duration-300"></span>
+                    </a>
+                    <a href="#how-it-works" class="relative font-medium hover:text-emerald-400 transition-colors group">
+                        How It Works
+                        <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-emerald-400 group-hover:w-full transition-all duration-300"></span>
+                    </a>
+                </nav>
+                
+                <div class="flex items-center gap-4">
+                    <button id="theme-toggle" class="relative h-10 w-10 rounded-xl bg-card border border-border hover:bg-muted transition-all duration-300 group">
+                        <i class="fas fa-sun absolute inset-0 flex items-center justify-center text-amber-500 opacity-0 dark:opacity-100 dark:rotate-0 rotate-90 transition-all duration-300"></i>
+                        <i class="fas fa-moon absolute inset-0 flex items-center justify-center text-slate-700 opacity-100 dark:opacity-0 dark:-rotate-90 transition-all duration-300"></i>
+                    </button>
+                    
+                    <a href="{% url 'signin' %}" class="relative group">
+                        <span class="flex items-center gap-2 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 text-white px-6 py-2.5 font-semibold shadow-md hover:shadow-lg transition-all duration-300 group-hover:translate-y-[-2px]">
+                            Get Started
+                            <i class="fas fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
+                        </span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+    
+    <!-- Hero Section -->
+    <section class="relative py-32 md:py-48 overflow-hidden hero-banner" style="margin-top: -70px;">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="max-w-7xl mx-auto">
+                <div class="grid lg:grid-cols-2 gap-12 items-center">
+                    <div class="animate-slide-up">
+                        <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-500/10 border border-emerald-500/20 mb-6">
+                            <span class="relative flex h-2 w-2">
+                                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                                <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                            </span>
+                            <span class="text-sm font-semibold text-emerald-600 dark:text-emerald-400">AI-Powered Detection</span>
+                        </div>
+                        
+                        <h1 class="text-5xl md:text-6xl lg:text-7xl font-bold text-white mb-6 leading-tight">
+                            Advanced
+                            <span class="block text-emerald-400 mt-2">Digital Forensics</span>
+                            Platform
+                        </h1>
+                        
+                        <p class="text-xl text-gray-200 mb-8 leading-relaxed">
+                            Detect forgeries, analyze digital evidence, and verify authenticity with cutting-edge AI tools.
+                            <span class="font-semibold text-white">Trusted by investigators worldwide.</span>
+                        </p>
+                        
+                        <div class="h-1 w-24 bg-emerald-500 rounded-full mb-8"></div>
+                        
+                        <div class="flex flex-wrap items-center gap-6 text-sm text-muted-foreground">
+                            <div class="flex items-center gap-3">
+                                <div class="flex -space-x-3">
+                                    <div class="h-8 w-8 rounded-full bg-gradient-to-br from-emerald-400 to-teal-400 border-2 border-background"></div>
+                                    <div class="h-8 w-8 rounded-full bg-gradient-to-br from-teal-400 to-cyan-400 border-2 border-background"></div>
+                                    <div class="h-8 w-8 rounded-full bg-gradient-to-br from-cyan-400 to-blue-400 border-2 border-background"></div>
+                                </div>
+                                <span><span class="font-bold text-foreground">15,000+</span> Investigators</span>
+                            </div>
+                            <div class="flex items-center gap-1">
+                                <i class="fas fa-star text-amber-500"></i>
+                                <i class="fas fa-star text-amber-500"></i>
+                                <i class="fas fa-star text-amber-500"></i>
+                                <i class="fas fa-star text-amber-500"></i>
+                                <i class="fas fa-star text-amber-500"></i>
+                                <span class="ml-2 font-semibold text-foreground">4.9/5.0</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="relative">
+                        <div class="relative rounded-3xl overflow-hidden shadow-2xl hover-lift hover:shadow-2xl transition-all duration-300">
+                            <img src="{% static 'images/img.jpeg' %}" 
+                                 alt="ForensicAI Dashboard" 
+                                 class="w-full h-auto">
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300">
+                                <div class="absolute bottom-0 left-0 right-0 p-6">
+                                    <h3 class="text-lg font-semibold text-white mb-2">Interactive Dashboard</h3>
+                                    <p class="text-sm text-gray-200">Real-time forensic analysis tools</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Floating stats cards -->
+                        <div class="absolute -top-6 -right-6 glass-card rounded-2xl p-4 shadow-xl animate-slide-up animation-delay-200">
+                            <div class="flex items-center gap-3">
+                                <div class="h-10 w-10 rounded-lg bg-emerald-500/20 flex items-center justify-center">
+                                    <i class="fas fa-check text-emerald-500"></i>
+                                </div>
+                                <div>
+                                    <div class="text-lg font-bold text-white">{{ accuracy_rate }}%</div>
+                                    <div class="text-xs text-gray-200">Accuracy</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="absolute -bottom-6 -left-6 glass-card rounded-2xl p-4 shadow-xl animate-slide-up animation-delay-400">
+                            <div class="flex items-center gap-3">
+                                <div class="h-10 w-10 rounded-lg bg-blue-500/20 flex items-center justify-center">
+                                    <i class="fas fa-bolt text-blue-500"></i>
+                                </div>
+                                <div>
+                                    <div class="text-lg font-bold text-white">Real-time</div>
+                                    <div class="text-xs text-gray-200">Analysis</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Stats Section -->
+    <section id="stats" class="py-20 relative overflow-hidden feature-gradient-bg">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl md:text-5xl font-bold text-foreground mb-4">Trusted by Industry Leaders</h2>
+                <p class="text-xl text-muted-foreground">Real results from real investigations</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <!-- Stat Card 1 -->
+                <div class="group cursor-pointer relative">
+                    <div class="relative bg-gradient-to-br from-emerald-600/20 to-emerald-600/5 rounded-3xl p-8 h-full transition-all duration-300 hover:from-emerald-600/30 hover:to-emerald-600/10">
+                        <div class="flex flex-col items-center text-center">
+                            <div class="h-20 w-20 rounded-2xl bg-emerald-600/20 flex items-center justify-center mb-6 group-hover:bg-emerald-600/30 group-hover:scale-110 transition-all duration-300">
+                                <i class="fas fa-file-alt text-3xl text-emerald-500"></i>
+                            </div>
+                            <div class="text-5xl font-black text-foreground mb-2 group-hover:text-emerald-500 transition-colors duration-300">{{ total_files }}</div>
+                            <div class="text-muted-foreground font-semibold">Files Analyzed</div>
+                            <div class="mt-4 h-1 w-16 bg-emerald-500 rounded-full group-hover:w-24 transition-all duration-300"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Stat Card 2 -->
+                <div class="group cursor-pointer relative">
+                    <div class="relative bg-gradient-to-br from-red-600/20 to-red-600/5 rounded-3xl p-8 h-full transition-all duration-300 hover:from-red-600/30 hover:to-red-600/10">
+                        <div class="flex flex-col items-center text-center">
+                            <div class="h-20 w-20 rounded-2xl bg-red-600/20 flex items-center justify-center mb-6 group-hover:bg-red-600/30 group-hover:scale-110 transition-all duration-300">
+                                <i class="fas fa-shield-alt text-3xl text-red-500"></i>
+                            </div>
+                            <div class="text-5xl font-black text-foreground mb-2 group-hover:text-red-500 transition-colors duration-300">{{ total_threats }}</div>
+                            <div class="text-muted-foreground font-semibold">Threats Detected</div>
+                            <div class="mt-4 h-1 w-16 bg-red-500 rounded-full group-hover:w-24 transition-all duration-300"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Stat Card 3 -->
+                <div class="group cursor-pointer relative">
+                    <div class="relative bg-gradient-to-br from-teal-600/20 to-teal-600/5 rounded-3xl p-8 h-full transition-all duration-300 hover:from-teal-600/30 hover:to-teal-600/10">
+                        <div class="flex flex-col items-center text-center">
+                            <div class="h-20 w-20 rounded-2xl bg-teal-600/20 flex items-center justify-center mb-6 group-hover:bg-teal-600/30 group-hover:scale-110 transition-all duration-300">
+                                <i class="fas fa-chart-line text-3xl text-teal-500"></i>
+                            </div>
+                            <div class="text-5xl font-black text-foreground mb-2 group-hover:text-teal-500 transition-colors duration-300">{{ accuracy_rate }}%</div>
+                            <div class="text-muted-foreground font-semibold">Accuracy Rate</div>
+                            <div class="mt-4 h-1 w-16 bg-teal-500 rounded-full group-hover:w-24 transition-all duration-300"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Stat Card 4 -->
+                <div class="group cursor-pointer relative">
+                    <div class="relative bg-gradient-to-br from-blue-600/20 to-blue-600/5 rounded-3xl p-8 h-full transition-all duration-300 hover:from-blue-600/30 hover:to-blue-600/10">
+                        <div class="flex flex-col items-center text-center">
+                            <div class="h-20 w-20 rounded-2xl bg-blue-600/20 flex items-center justify-center mb-6 group-hover:bg-blue-600/30 group-hover:scale-110 transition-all duration-300">
+                                <i class="fas fa-users text-3xl text-blue-500"></i>
+                            </div>
+                            <div class="text-5xl font-black text-foreground mb-2 group-hover:text-blue-500 transition-colors duration-300">{{ happy_clients }}</div>
+                            <div class="text-muted-foreground font-semibold">Happy Clients</div>
+                            <div class="mt-4 h-1 w-16 bg-blue-500 rounded-full group-hover:w-24 transition-all duration-300"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Features Section -->
+    <section id="features" class="py-24 relative overflow-hidden">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-20">
+                <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-500/10 border border-emerald-500/20 mb-6">
+                    <i class="fas fa-star text-emerald-500"></i>
+                    <span class="text-sm font-semibold text-emerald-600 dark:text-emerald-400">Powerful Features</span>
+                </div>
+                
+                <h2 class="text-4xl md:text-5xl font-bold text-foreground mb-6">
+                    Everything You Need for
+                    <span class="block gradient-text mt-2">Digital Forensics</span>
+                </h2>
+                
+                <p class="text-xl text-muted-foreground">
+                    Comprehensive AI-powered tools for digital forensics and authenticity verification.
+                </p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Feature 1 -->
+                <div class="group animate-slide-up" style="animation-delay: 0ms">
+                    <div class="relative h-full rounded-3xl bg-gradient-to-br from-emerald-600/10 to-emerald-600/5 p-8 hover-lift transition-all duration-300 hover:from-emerald-600/15 hover:to-emerald-600/10">
+                        <div class="flex items-start justify-between mb-6">
+                            <div class="h-14 w-14 rounded-xl bg-emerald-500/10 flex items-center justify-center">
+                                <i class="fas fa-camera-retro text-2xl text-emerald-500"></i>
+                            </div>
+                            <div class="h-8 w-8 rounded-full bg-emerald-500/10 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                                <i class="fas fa-arrow-right text-emerald-500"></i>
+                            </div>
+                        </div>
+                        
+                        <h3 class="text-xl font-bold text-foreground mb-4">Image Analysis</h3>
+                        <p class="text-muted-foreground mb-6">Detect manipulations and verify authenticity of digital images.</p>
+                        
+                        <div class="h-1 w-12 bg-gradient-to-r from-emerald-500 to-transparent rounded-full group-hover:w-full transition-all duration-500"></div>
+                    </div>
+                </div>
+                
+                <!-- Feature 2 -->
+                <div class="group animate-slide-up" style="animation-delay: 100ms">
+                    <div class="relative h-full rounded-3xl bg-gradient-to-br from-teal-600/10 to-teal-600/5 p-8 hover-lift transition-all duration-300 hover:from-teal-600/15 hover:to-teal-600/10">
+                        <div class="flex items-start justify-between mb-6">
+                            <div class="h-14 w-14 rounded-xl bg-teal-500/10 flex items-center justify-center">
+                                <i class="fas fa-file-alt text-2xl text-teal-500"></i>
+                            </div>
+                            <div class="h-8 w-8 rounded-full bg-teal-500/10 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                                <i class="fas fa-arrow-right text-teal-500"></i>
+                            </div>
+                        </div>
+                        
+                        <h3 class="text-xl font-bold text-foreground mb-4">Document Forensics</h3>
+                        <p class="text-muted-foreground mb-6">Analyze documents for alterations and detect forged content.</p>
+                        
+                        <div class="h-1 w-12 bg-gradient-to-r from-teal-500 to-transparent rounded-full group-hover:w-full transition-all duration-500"></div>
+                    </div>
+                </div>
+                
+                <!-- Feature 3 -->
+                <div class="group animate-slide-up" style="animation-delay: 200ms">
+                    <div class="relative h-full rounded-3xl bg-gradient-to-br from-blue-600/10 to-blue-600/5 p-8 hover-lift transition-all duration-300 hover:from-blue-600/15 hover:to-blue-600/10">
+                        <div class="flex items-start justify-between mb-6">
+                            <div class="h-14 w-14 rounded-xl bg-blue-500/10 flex items-center justify-center">
+                                <i class="fas fa-font text-2xl text-blue-500"></i>
+                            </div>
+                            <div class="h-8 w-8 rounded-full bg-blue-500/10 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                                <i class="fas fa-arrow-right text-blue-500"></i>
+                            </div>
+                        </div>
+                        
+                        <h3 class="text-xl font-bold text-foreground mb-4">Text Analysis</h3>
+                        <p class="text-muted-foreground mb-6">Identify AI-generated content and analyze writing style.</p>
+                        
+                        <div class="h-1 w-12 bg-gradient-to-r from-blue-500 to-transparent rounded-full group-hover:w-full transition-all duration-500"></div>
+                    </div>
+                </div>
+                
+                <!-- Feature 4 -->
+                <div class="group animate-slide-up" style="animation-delay: 300ms">
+                    <div class="relative h-full rounded-3xl bg-gradient-to-br from-purple-600/10 to-purple-600/5 p-8 hover-lift transition-all duration-300 hover:from-purple-600/15 hover:to-purple-600/10">
+                        <div class="flex items-start justify-between mb-6">
+                            <div class="h-14 w-14 rounded-xl bg-purple-500/10 flex items-center justify-center">
+                                <i class="fas fa-video text-2xl text-purple-500"></i>
+                            </div>
+                            <div class="h-8 w-8 rounded-full bg-purple-500/10 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                                <i class="fas fa-arrow-right text-purple-500"></i>
+                            </div>
+                        </div>
+                        
+                        <h3 class="text-xl font-bold text-foreground mb-4">Video Authentication</h3>
+                        <p class="text-muted-foreground mb-6">Verify video integrity and detect deepfakes.</p>
+                        
+                        <div class="h-1 w-12 bg-gradient-to-r from-purple-500 to-transparent rounded-full group-hover:w-full transition-all duration-500"></div>
+                    </div>
+                </div>
+                
+                <!-- Feature 5 -->
+                <div class="group animate-slide-up" style="animation-delay: 400ms">
+                    <div class="relative h-full rounded-3xl bg-gradient-to-br from-amber-600/10 to-amber-600/5 p-8 hover-lift transition-all duration-300 hover:from-amber-600/15 hover:to-amber-600/10">
+                        <div class="flex items-start justify-between mb-6">
+                            <div class="h-14 w-14 rounded-xl bg-amber-500/10 flex items-center justify-center">
+                                <i class="fas fa-database text-2xl text-amber-500"></i>
+                            </div>
+                            <div class="h-8 w-8 rounded-full bg-amber-500/10 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                                <i class="fas fa-arrow-right text-amber-500"></i>
+                            </div>
+                        </div>
+                        
+                        <h3 class="text-xl font-bold text-foreground mb-4">Data Recovery</h3>
+                        <p class="text-muted-foreground mb-6">Recover deleted data and extract evidence from media.</p>
+                        
+                        <div class="h-1 w-12 bg-gradient-to-r from-amber-500 to-transparent rounded-full group-hover:w-full transition-all duration-500"></div>
+                    </div>
+                </div>
+                
+                <!-- Feature 6 -->
+                <div class="group animate-slide-up" style="animation-delay: 500ms">
+                    <div class="relative h-full rounded-3xl bg-gradient-to-br from-red-600/10 to-red-600/5 p-8 hover-lift transition-all duration-300 hover:from-red-600/15 hover:to-red-600/10">
+                        <div class="flex items-start justify-between mb-6">
+                            <div class="h-14 w-14 rounded-xl bg-red-500/10 flex items-center justify-center">
+                                <i class="fas fa-shield-alt text-2xl text-red-500"></i>
+                            </div>
+                            <div class="h-8 w-8 rounded-full bg-red-500/10 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                                <i class="fas fa-arrow-right text-red-500"></i>
+                            </div>
+                        </div>
+                        
+                        <h3 class="text-xl font-bold text-foreground mb-4">Integrity Verification</h3>
+                        <p class="text-muted-foreground mb-6">Verify digital evidence integrity with tamper-proof reports.</p>
+                        
+                        <div class="h-1 w-12 bg-gradient-to-r from-red-500 to-transparent rounded-full group-hover:w-full transition-all duration-500"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    <!-- How It Works Section -->
+    <section class="py-24 bg-muted/30 relative" id="how-it-works">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold text-foreground mb-6">How It Works</h2>
+                <p class="text-lg text-muted-foreground">Simple 3-step process to verify digital assets.</p>
+            </div>
+            
+            <div class="grid md:grid-cols-3 gap-8 relative">
+                <!-- Connecting Line (Desktop) -->
+                <div class="hidden md:block absolute top-12 left-[16%] right-[16%] h-0.5 bg-gradient-to-r from-emerald-500/20 via-teal-500/20 to-blue-500/20 z-0"></div>
+                
+                <!-- Step 1 -->
+                <div class="relative z-10 text-center group">
+                    <div class="h-24 w-24 mx-auto bg-card rounded-2xl shadow-lg border border-emerald-500/20 flex items-center justify-center mb-6 hover:scale-110 transition-transform duration-300">
+                        <i class="fas fa-cloud-upload-alt text-4xl text-emerald-500"></i>
+                    </div>
+                    <div class="inline-block px-4 py-1 rounded-full bg-emerald-500/10 text-emerald-600 font-semibold text-sm mb-4">Step 01</div>
+                    <h3 class="text-xl font-bold text-foreground mb-3">Upload Evidence</h3>
+                    <p class="text-muted-foreground">Securely upload images, videos, or documents to our encrypted platform.</p>
+                </div>
+                
+                <!-- Step 2 -->
+                <div class="relative z-10 text-center group">
+                    <div class="h-24 w-24 mx-auto bg-card rounded-2xl shadow-lg border border-teal-500/20 flex items-center justify-center mb-6 hover:scale-110 transition-transform duration-300">
+                        <i class="fas fa-microchip text-4xl text-teal-500"></i>
+                    </div>
+                    <div class="inline-block px-4 py-1 rounded-full bg-teal-500/10 text-teal-600 font-semibold text-sm mb-4">Step 02</div>
+                    <h3 class="text-xl font-bold text-foreground mb-3">AI Analysis</h3>
+                    <p class="text-muted-foreground">Our advanced AI algorithms scan for forgeries, deepfakes, and anomalies.</p>
+                </div>
+                
+                <!-- Step 3 -->
+                <div class="relative z-10 text-center group">
+                    <div class="h-24 w-24 mx-auto bg-card rounded-2xl shadow-lg border border-blue-500/20 flex items-center justify-center mb-6 hover:scale-110 transition-transform duration-300">
+                        <i class="fas fa-file-contract text-4xl text-blue-500"></i>
+                    </div>
+                    <div class="inline-block px-4 py-1 rounded-full bg-blue-500/10 text-blue-600 font-semibold text-sm mb-4">Step 03</div>
+                    <h3 class="text-xl font-bold text-foreground mb-3">Get Report</h3>
+                    <p class="text-muted-foreground">Receive a detailed, court-admissible forensic report with integrity scores.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-24 relative overflow-hidden">
+        <div class="absolute inset-0 bg-gradient-to-br from-emerald-500/10 via-teal-500/10 to-cyan-500/10"></div>
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="max-w-3xl mx-auto text-center">
+                <h2 class="text-4xl md:text-5xl font-bold text-foreground mb-6">
+                    Ready to Transform Your
+                    <span class="block gradient-text">Forensic Analysis?</span>
+                </h2>
+                
+                <p class="text-xl text-muted-foreground mb-8">
+                    Join thousands of investigators who trust TrueVision for accurate, reliable digital forensics.
+                </p>
+                
+
+                
+                <p class="text-sm text-muted-foreground mt-6">
+                    No credit card required • Free 14-day trial • Cancel anytime
+                </p>
+            </div>
+        </div>
+    </section>
+    
+
+    
+    <!-- Footer -->
+    <footer class="py-12 bg-foreground text-background">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid md:grid-cols-4 gap-8">
+                <div>
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="h-10 w-10 rounded-xl bg-background/10 flex items-center justify-center">
+                            <i class="fas fa-shield-alt text-background"></i>
+                        </div>
+                        <span class="text-xl font-bold">TrueVision</span>
+                    </div>
+                    <p class="text-background/70">
+                        Advanced AI-powered digital forensics platform for investigators worldwide.
+                    </p>
+                </div>
+                
+                <div>
+                    <h3 class="font-semibold text-lg mb-4">Product</h3>
+                    <ul class="space-y-3">
+                        <li><a href="#" class="text-background/70 hover:text-background transition-colors">Features</a></li>
+                        <li><a href="#" class="text-background/70 hover:text-background transition-colors">Pricing</a></li>
+                        <li><a href="#" class="text-background/70 hover:text-background transition-colors">API</a></li>
+                        <li><a href="#" class="text-background/70 hover:text-background transition-colors">Documentation</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 class="font-semibold text-lg mb-4">Company</h3>
+                    <ul class="space-y-3">
+                        <li><a href="#" class="text-background/70 hover:text-background transition-colors">About</a></li>
+                        <li><a href="#" class="text-background/70 hover:text-background transition-colors">Blog</a></li>
+                        <li><a href="#" class="text-background/70 hover:text-background transition-colors">Careers</a></li>
+                        <li><a href="#" class="text-background/70 hover:text-background transition-colors">how it works</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 class="font-semibold text-lg mb-4">Legal</h3>
+                    <ul class="space-y-3">
+                        <li><a href="#" class="text-background/70 hover:text-background transition-colors">Privacy</a></li>
+                        <li><a href="#" class="text-background/70 hover:text-background transition-colors">Terms</a></li>
+                        <li><a href="#" class="text-background/70 hover:text-background transition-colors">Security</a></li>
+                        <li><a href="#" class="text-background/70 hover:text-background transition-colors">Compliance</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="border-t border-background/20 mt-8 pt-8 text-center text-background/50">
+                <p>&copy; 2024 TrueVision. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+    
+    <!-- Back to Top Button -->
+    <button id="back-to-top" class="fixed bottom-8 right-8 h-12 w-12 rounded-full bg-gradient-to-r from-emerald-600 to-teal-600 text-white shadow-xl hover-lift opacity-0 transition-opacity duration-300">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+    
+    <script>
+        // Theme toggle
+        const themeToggle = document.getElementById('theme-toggle');
+        const htmlElement = document.documentElement;
+        
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme) {
+            htmlElement.classList.toggle('dark', savedTheme === 'dark');
+        } else {
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            htmlElement.classList.toggle('dark', prefersDark);
+        }
+        
+        themeToggle.addEventListener('click', () => {
+            const isDark = htmlElement.classList.toggle('dark');
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+        });
+        
+        // Scroll progress
+        window.addEventListener('scroll', () => {
+            const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+            const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrolled = (winScroll / height) * 100;
+            document.getElementById('progress-bar').style.width = scrolled + '%';
+            
+            // Back to top button
+            const backToTop = document.getElementById('back-to-top');
+            if (winScroll > 300) {
+                backToTop.style.opacity = '1';
+            } else {
+                backToTop.style.opacity = '0';
+            }
+        });
+        
+        // Back to top functionality
+        document.getElementById('back-to-top').addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+        
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+        });
+        
+        // Particle background
+        function createParticles() {
+            const container = document.getElementById('particles');
+            const particleCount = 50;
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                
+                // Random size and position
+                const size = Math.random() * 6 + 2;
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                particle.style.left = `${Math.random() * 100}%`;
+                particle.style.top = `${Math.random() * 100}%`;
+                
+                // Random animation delay
+                particle.style.animationDelay = `${Math.random() * 20}s`;
+                
+                container.appendChild(particle);
+            }
+        }
+        
+        createParticles();
+        
+        // Intersection Observer for animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('animate-slide-up');
+                }
+            });
+        }, observerOptions);
+        
+        // Observe elements with animation classes
+        document.querySelectorAll('.animate-slide-up').forEach(el => {
+            observer.observe(el);
+        });
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const header = document.getElementById('main-header');
+            const navMenu = document.getElementById('nav-menu');
+            const logoText = document.getElementById('logo-text');
+            const statsSection = document.getElementById('stats');
+            
+            // Initial classes for transparent state (over hero)
+            const transparentState = {
+                header: ['bg-transparent'],
+                headerRemove: ['bg-background/80', 'backdrop-blur-lg', 'shadow-md'],
+                navText: ['text-white'],
+                navTextRemove: ['text-foreground'], // We'll manage specific link colors via CSS injection or class toggling
+                logoText: ['text-white'],
+                logoTextRemove: ['gradient-text']
+            };
+
+            // Classes for scrolled state (solid background)
+            const solidState = {
+                header: ['bg-background/80', 'backdrop-blur-lg', 'shadow-md'],
+                headerRemove: ['bg-transparent'],
+                logoText: ['gradient-text'],
+                logoTextRemove: ['text-white']
+            };
+
+            function updateNavbar() {
+                if (!statsSection) return;
+                
+                const scrollPosition = window.scrollY;
+                const triggerPoint = statsSection.offsetTop - 100; // Switch before hitting the section
+
+                const links = navMenu.querySelectorAll('a');
+
+                if (scrollPosition < triggerPoint) {
+                    // Transparent State
+                    header.classList.add(...transparentState.header);
+                    header.classList.remove(...transparentState.headerRemove);
+                    
+                    logoText.classList.add(...transparentState.logoText);
+                    logoText.classList.remove(...transparentState.logoTextRemove);
+
+                    // Update Links
+                    navMenu.classList.add('text-white');
+                    navMenu.classList.remove('text-foreground');
+                    
+                    links.forEach(link => {
+                        link.classList.remove('text-foreground', 'text-muted-foreground');
+                        // link.classList.add('text-white'); // Handled by parent
+                    });
+
+                } else {
+                    // Solid State
+                    header.classList.add(...solidState.header);
+                    header.classList.remove(...solidState.headerRemove);
+                    
+                    logoText.classList.add(...solidState.logoText);
+                    logoText.classList.remove(...solidState.logoTextRemove);
+
+                    // Update Links
+                    navMenu.classList.remove('text-white');
+                    // navMenu.classList.add('text-foreground'); // Don't enforce on parent, let links decide
+                    
+                    links.forEach(link => {
+                       // Restore original styling logic approximately
+                       // First link is "Home" which was text-foreground, others muted
+                       if (link.innerText.trim() === 'Home') {
+                           link.classList.add('text-foreground');
+                           link.classList.remove('text-muted-foreground');
+                       } else {
+                           link.classList.add('text-muted-foreground');
+                           link.classList.remove('text-foreground');
+                       }
+                    });
+                }
+            }
+
+            // Run on load and scroll
+            window.addEventListener('scroll', updateNavbar);
+            updateNavbar(); // Initial check
+        });
+    </script>
+</body>
+</html>

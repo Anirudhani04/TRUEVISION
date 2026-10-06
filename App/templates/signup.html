@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ForensicAI | Image Processing Platform</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.9)), 
+                        url('https://images.unsplash.com/photo-1555949963-aa79dcee981c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1920&q=80') no-repeat center center fixed;
+            background-size: cover;
+            padding: 20px;
+        }
+
+        .container {
+            position: relative;
+            width: 100%;
+            max-width: 1000px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            gap: 30px;
+        }
+
+        .banner {
+            flex: 1;
+            min-width: 300px;
+            padding: 40px;
+            color: white;
+            text-align: center;
+        }
+
+        .banner h1 {
+            font-size: 2.8rem;
+            margin-bottom: 20px;
+            background: linear-gradient(45deg, #2ecc71, #1abc9c, #27ae60);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .banner p {
+            font-size: 1.2rem;
+            line-height: 1.6;
+            margin-bottom: 30px;
+            opacity: 0.9;
+        }
+
+        .features {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+        }
+
+        .feature {
+            background: rgba(39, 174, 96, 0.15);
+            backdrop-filter: blur(10px);
+            padding: 15px;
+            border-radius: 10px;
+            width: 140px;
+            text-align: center;
+            transition: transform 0.3s ease;
+            border: 1px solid rgba(46, 204, 113, 0.3);
+        }
+
+        .feature:hover {
+            transform: translateY(-5px);
+            background: rgba(46, 204, 113, 0.2);
+            box-shadow: 0 5px 15px rgba(46, 204, 113, 0.2);
+        }
+
+        .feature i {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            color: #2ecc71;
+        }
+
+        .form-container {
+            width: 450px;
+            padding: 40px;
+            background: rgba(23, 32, 26, 0.4);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(46, 204, 113, 0.3);
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            color: #fff;
+        }
+
+        .form-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .form-header h2 {
+            font-size: 2rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            color: #2ecc71;
+        }
+
+        .form-header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .tabs {
+            display: flex;
+            margin-bottom: 20px;
+            background: rgba(39, 174, 96, 0.15);
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid rgba(46, 204, 113, 0.2);
+        }
+
+        .tab {
+            flex: 1;
+            padding: 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .tab.active {
+            background: linear-gradient(45deg, #27ae60, #2ecc71);
+            font-weight: 600;
+            color: white;
+        }
+
+        .tab:hover:not(.active) {
+            background: rgba(46, 204, 113, 0.1);
+        }
+
+        .form {
+            display: none;
+        }
+
+        .form.active {
+            display: block;
+        }
+
+        .input-group {
+            position: relative;
+            margin-bottom: 25px;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 15px 15px 15px 45px;
+            border: none;
+            outline: none;
+            background: rgba(23, 32, 26, 0.5);
+            border-radius: 8px;
+            color: #fff;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(46, 204, 113, 0.2);
+        }
+
+        .input-group input::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .input-group input:focus {
+            background: rgba(39, 174, 96, 0.15);
+            box-shadow: 0 0 10px rgba(46, 204, 113, 0.3);
+            border-color: rgba(46, 204, 113, 0.4);
+        }
+
+        .input-group i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #2ecc71;
+            font-size: 1.2rem;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 8px;
+            background: linear-gradient(45deg, #27ae60, #2ecc71);
+            color: white;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(39, 174, 96, 0.4);
+        }
+
+        .btn:hover {
+            background: linear-gradient(45deg, #219653, #25b56a);
+            box-shadow: 0 6px 20px rgba(39, 174, 96, 0.6);
+            transform: translateY(-2px);
+        }
+
+        .form-footer {
+            text-align: center;
+            margin-top: 25px;
+        }
+
+        .form-footer p {
+            margin-bottom: 10px;
+            opacity: 0.9;
+        }
+
+        .message {
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 8px;
+            text-align: center;
+            display: none;
+        }
+
+        .success {
+            background: rgba(46, 204, 113, 0.2);
+            border: 1px solid rgba(46, 204, 113, 0.5);
+            color: #fff;
+        }
+
+        .error {
+            background: rgba(231, 76, 60, 0.2);
+            border: 1px solid rgba(231, 76, 60, 0.5);
+            color: #fff;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+            
+            .form-container {
+                width: 100%;
+                padding: 30px;
+            }
+            
+            .banner h1 {
+                font-size: 2.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="banner">
+            <h1>TrueVision</h1>
+            <p>Transform your images with our advanced processing tools. Enhance, filter, and optimize your visuals with AI-powered technology.</p>
+            
+            <div class="features">
+                <div class="feature">
+                    <i class="fas fa-magic"></i>
+                    <p>AI Enhance</p>
+                </div>
+                <div class="feature">
+                    <i class="fas fa-sliders-h"></i>
+                    <p>Filters</p>
+                </div>
+                <div class="feature">
+                    <i class="fas fa-bolt"></i>
+                    <p>Fast Processing</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="form-container">
+            <div class="form-header">
+                <h2>Get Started</h2>
+                <p>Join our image processing community</p>
+            </div>
+            
+            <div class="tabs">
+                <div class="tab active" data-tab="login">Login</div>
+                <div class="tab" data-tab="signup">Sign Up</div>
+            </div>
+            
+            <!-- Update the login form section in your HTML -->
+<div id="login-form" class="form active">
+    <div id="login-message" class="message"></div>
+    
+    <form id="loginForm">
+        <div class="input-group">
+            <i class="fas fa-user"></i>
+            <input type="text" id="login-username" name="username" placeholder="User Name" required>
+        </div>
+        <div class="input-group">
+            <i class="fas fa-lock"></i>
+            <input type="password" id="login-password" name="password" placeholder="Password" required>
+        </div>
+        <button type="submit" class="btn">Login to Your Account</button>
+    </form>
+</div>
+
+<div id="signup-form" class="form">
+    <div id="signup-message" class="message"></div>
+    
+    <form id="signupForm">
+        <div class="input-group">
+            <i class="fas fa-user"></i>
+            <input type="text" id="signup-fullname" name="fullname" placeholder="Full Name" required>
+        </div>
+        <div class="input-group">
+            <i class="fas fa-envelope"></i>
+            <input type="email" id="signup-email" name="email" placeholder="Email Address" required>
+        </div>
+        <div class="input-group">
+            <i class="fas fa-user"></i>
+            <input type="text" id="signup-username" name="username" placeholder="User Name" required>
+        </div>
+        <div class="input-group">
+            <i class="fas fa-lock"></i>
+            <input type="password" id="signup-password" name="password" placeholder="Password" required>
+        </div>
+        <div class="input-group">
+            <i class="fas fa-lock"></i>
+            <input type="password" id="signup-confirm-password" name="confirm_password" placeholder="Confirm Password" required>
+        </div>
+        <button type="submit" class="btn">Create Account</button>
+    </form>
+</div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Tab switching functionality
+            const tabs = document.querySelectorAll('.tab');
+            const forms = document.querySelectorAll('.form');
+            
+            tabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    const tabName = this.getAttribute('data-tab');
+                    
+                    // Update active tab
+                    tabs.forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // Show corresponding form
+                    forms.forEach(form => {
+                        form.classList.remove('active');
+                        if (form.id === `${tabName}-form`) {
+                            form.classList.add('active');
+                        }
+                    });
+                });
+            });
+            
+            // Replace the simulateAjaxCall function with actual fetch calls
+async function makeApiCall(url, data) {
+    try {
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCookie('csrftoken') // You'll need to handle CSRF token
+            },
+            body: JSON.stringify(data)
+        });
+        
+        return await response.json();
+    } catch (error) {
+        console.error('API call failed:', error);
+        throw error;
+    }
+}
+
+// Function to get CSRF token (add this)
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+// Update form submissions to use real API calls
+document.getElementById('signupForm').addEventListener('submit', async function(event) {
+    event.preventDefault();
+    
+    const formData = {
+        fullname: document.getElementById('signup-fullname').value,
+        email: document.getElementById('signup-email').value,
+        username: document.getElementById('signup-username').value,
+        password: document.getElementById('signup-password').value,
+        confirm_password: document.getElementById('signup-confirm-password').value
+    };
+    
+    const messageEl = document.getElementById('signup-message');
+    
+    try {
+        const data = await makeApiCall('/api/signup/', formData);
+        
+        if (data.success) {
+            showMessage(messageEl, data.message, "success");
+            document.getElementById('signupForm').reset();
+            setTimeout(() => {
+                document.querySelector('[data-tab="login"]').click();
+            }, 2000);
+        } else {
+            showMessage(messageEl, data.message, "error");
+        }
+    } catch (error) {
+        showMessage(messageEl, 'An error occurred during signup.', "error");
+    }
+});
+
+document.getElementById('loginForm').addEventListener('submit', async function(event) {
+    event.preventDefault();
+    
+    const formData = {
+        username: document.getElementById('login-username').value,
+        password: document.getElementById('login-password').value
+    };
+    
+    const messageEl = document.getElementById('login-message');
+    
+    try {
+        const data = await makeApiCall('/api/login/', formData);
+        
+        if (data.success) {
+            showMessage(messageEl, data.message, "success");
+            document.getElementById('loginForm').reset();
+            setTimeout(() => {
+                if (data.user && data.user.is_staff) {
+                    window.location.href = '/admin-dashboard/';
+                } else {
+                    window.location.href = '/dashboard/';
+                }
+            }, 1500);
+        } else {
+            showMessage(messageEl, data.message, "error");
+        }
+    } catch (error) {
+        showMessage(messageEl, 'An error occurred during login.', "error");
+    }
+});
+            
+            // Function to display messages
+            function showMessage(element, message, type) {
+                element.textContent = message;
+                element.className = `message ${type}`;
+                element.style.display = 'block';
+                console.log(message);
+                setTimeout(() => {
+                    element.style.display = 'none';
+                }, 5000);
+            }
+        });
+    </script>
+</body>
+</html>
