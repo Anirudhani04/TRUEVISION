@@ -1,25 +1,25 @@
-🔍 TRUEVISION: A Digital Forensics Framework
-A unified multi-modal system for detecting image forgery, text plagiarism, and AI-generated content.
+ TRUEVISION: A Digital Forensics Framework
+"A unified multi-modal system for detecting image forgery, text plagiarism and AI-generated content"
 
-📖 Overview
+ Overview :
 TrueVision is a comprehensive digital forensic framework designed to verify the authenticity of text, images, and structured documents. As artificial intelligence and machine learning advance, modern tools can generate realistic text, manipulate images, and modify digital documents with minimal effort. This introduces serious challenges related to authenticity, trust, and digital integrity across academic, journalistic, and legal environments.
 
 While traditional verification tools typically focus on a single content type, TrueVision addresses the need for a multi-modal framework. It integrates machine learning, deep learning, metadata analysis, and cryptographic hashing techniques within a modular, web-based architecture to provide reliable, explainable, and automated forensic analysis.
 
-✨ Key Features
-Unified Multi-Modal Framework: Detects forgery across images, text, and structured documents within a single, secure platform, eliminating the need for fragmented, single-purpose tools.
+✨ Key Features :
+1) Unified Multi-Modal Framework: Detects forgery across images, text, and structured documents within a single, secure platform, eliminating the need for fragmented, single-purpose tools.
 
-Image Authentication Module: Analyzes uploaded images (or images extracted from documents) for signs of sophisticated manipulation. It utilizes Convolutional Neural Networks (CNNs) and Error Level Analysis (ELA) to extract spatial features and identify tampering techniques like splicing, copy-move operations, and synthetic AI generation.
+2) Image Authentication Module: Analyzes uploaded images (or images extracted from documents) for signs of sophisticated manipulation. It utilizes Convolutional Neural Networks (CNNs) and Error Level Analysis (ELA) to extract spatial features and identify tampering techniques like splicing, copy-move operations, and synthetic AI generation.
 
-Text and Document Verification: Evaluates textual content to determine originality and detect AI-generated writing. This module uses similarity-based comparison for plagiarism detection alongside supervised machine learning classifiers (including BERT-based models) to analyze linguistic patterns and probabilistic features.
+3) Text and Document Verification: Evaluates textual content to determine originality and detect AI-generated writing. This module uses similarity-based comparison for plagiarism detection alongside supervised machine learning classifiers (including BERT-based models) to analyze linguistic patterns and probabilistic features.
 
-Metadata & Structural Inspection: Analyzes document properties (such as author names, creation timestamps, device IDs, and GPS data) to identify inconsistencies that may indicate structural tampering or hidden alterations.
+4) Metadata & Structural Inspection: Analyzes document properties (such as author names, creation timestamps, device IDs, and GPS data) to identify inconsistencies that may indicate structural tampering or hidden alterations.
 
-File-Level Integrity Validation: Implements robust cryptographic hashing mechanisms to ensure file-level integrity, instantly detecting unauthorized binary-level modifications.
+5) File-Level Integrity Validation: Implements robust cryptographic hashing mechanisms to ensure file-level integrity, instantly detecting unauthorized binary-level modifications.
 
-Decentralized & Explainable Reporting: Each module independently generates and presents its verification results to prevent ambiguity. The system provides structured findings, clear authenticity scores, highlighted suspicious regions, and downloadable PDF reports for auditing.
+6) Decentralized & Explainable Reporting: Each module independently generates and presents its verification results to prevent ambiguity. The system provides structured findings, clear authenticity scores, highlighted suspicious regions, and downloadable PDF reports for auditing.
 
-🏗️ System Architecture
+System Architecture :
 TrueVision adopts a structured, modular workflow designed for scalability and precision:
 
 Input & Validation (File Module): Users upload content (Text, Image, or PDF). The system performs format validation, cleans the data, and extracts embedded metadata.
@@ -37,7 +37,7 @@ Decision & Reporting: Outputs from the independent modules are processed to gene
 <img width="588" height="660" alt="image" src="https://github.com/user-attachments/assets/0fdc3632-628e-4222-982e-f49b3c6d68b5" />
 
 
-💻 Technology Stack
+ Technology Stack :
 Backend & Framework
 
 Python 3.8+ – Core programming language
@@ -46,7 +46,7 @@ Django – Web framework and backend routing
 
 SQLite / PostgreSQL – Database management
 
-Machine Learning & Forensics
+Machine Learning & Forensics :
 
 TensorFlow / Keras – Deep learning models (CNNs) for image forensics
 
@@ -54,7 +54,7 @@ Scikit-learn – Supervised machine learning algorithms for text classification
 
 Transformers (Hugging Face) – BERT LLM integration for semantic analysis
 
-Data & File Processing
+Data & File Processing :
 
 OpenCV – Image preprocessing, ELA, and spatial feature extraction
 
@@ -72,7 +72,6 @@ python-docx – Handling DOCX file structures
 
 <img width="844" height="480" alt="image" src="https://github.com/user-attachments/assets/b30da171-33c9-4cb3-93e6-c2c7008171fa" />
 
-<img width="747" height="453" alt="image" src="https://github.com/user-attachments/assets/b4e69d7a-f0d3-4929-8e44-551b1efdf57b" />
 
 
 
