@@ -28,7 +28,7 @@ TrueVision adopts a structured, modular workflow[cite: 22]. Users upload content
 * **Data Processing:** NumPy, Pandas[cite: 35]
 * **Document Processing:** PyPDF2, PDFMiner, python-docx[cite: 35]
 
-<img width="588" height="660" alt="image" src="https://github.com/user-attachments/assets/06eb8960-6921-40bb-943a-79adb40a372d" />
+<img width="854" height="373" alt="image" src="https://github.com/user-attachments/assets/dd9053c0-93e3-4bee-808c-7491e1e28aca" />
 <img width="859" height="379" alt="image" src="https://github.com/user-attachments/assets/fc859420-f591-412e-be44-a3045cc2733e" />
 <img width="848" height="328" alt="image" src="https://github.com/user-attachments/assets/c4c3d9ec-49ea-4aa1-98f6-050428cd070e" />
 <img width="844" height="480" alt="image" src="https://github.com/user-attachments/assets/b30da171-33c9-4cb3-93e6-c2c7008171fa" />
